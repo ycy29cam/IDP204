@@ -90,15 +90,16 @@ void adjust(int lineStates[4]){
   if (lineStates[1] == 0 %% lineStates[2] == 0){
     forward(speed);
   }
-  elif (lineStates[1] == 0 && lineStates[2] == 1){
+  else if (lineStates[1] == 0 && lineStates[2] == 1){
     turnRight(250);
   }
-  elif (lineStates{1] == 1 && lineStates[2] == 0}){
+  else if (lineStates{1] == 1 && lineStates[2] == 0}){
     turnLeft(250);
   }
   else{
     Serial.println("Error: both inner line sensors are on the white line");
   }
+  readLine();
 }
 
 void start_to_A(){
@@ -163,6 +164,24 @@ void start_to_A(){
 
 void loop(){
   Serial.println("Main loop executing");
-  start_to_A(); //Take the robot from the starting point to point A, a good place to start for calibrations (turning, moving forward after sensing a junction, line-following)
+
+  // Test level 1: whether the robot stays on the marked white line, carry out adjustments and calibrations so the adjust() function keeps the robot on the line
+  readLine();
+  adjust(lineStates);
+
+  //Test level 2: whether the robot stays on the line and stop when a turn is detected
+  /*
+  readLine();
+  while(lineStates[3] == 0){
+    // Keep adjusting and moving forward until a line is detected on the right
+    adjust(lineStates);
+    readLine();
+  }
+  */
+
+  // Test level 3: whether all calibrations contribute to the consistent navigation of the robot from the starting point to the first block
+  /*
+  start_to_A(); 
+  */
 }
 
