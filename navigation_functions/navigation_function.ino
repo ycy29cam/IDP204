@@ -48,7 +48,7 @@ void drive_route(int* journey, int number_of_junctions) {
         int left_sensorValue = digitalRead(left_junction_sensor);
         int right_sensorValue = digitalRead(right_junction_sensor);
 
-        // if junction sensed
+        // if junction sensed, should probably be done on an interrupt basis
         if (/* insert syntax for sensing a junction */) {
             // Sensor is triggered, stop the motors and perform the required turn
             stopMotors();
@@ -72,7 +72,7 @@ void drive_route(int* journey, int number_of_junctions) {
 
 
 void forward(int speed) {
-  // Rotate both motors forward at the given speed
+  // Rotate both motors forward at the given speed, will need to be determined
   left->setSpeed(speed);
   right->setSpeed(speed);
   left->run(FORWARD);
@@ -88,7 +88,7 @@ void stopMotors() {
 
 void turn(int direction) {
   // Function to perform a turn in the specified direction
-  // Adjust the motor speeds and run direction based on your requirements
+  // Adjust the motor speeds and run direction based on turning requirements
   left->setSpeed(200);
   right->setSpeed(200);
 
@@ -100,7 +100,7 @@ void turn(int direction) {
     right->run(BACKWARD);
   }
 
-  delay(500);  // Adjust the turn duration based on your requirements
+  delay(500);  // Adjust the turn duration based on turn requirements again
 
   // Stop the motors after the turn
   stopMotors();
