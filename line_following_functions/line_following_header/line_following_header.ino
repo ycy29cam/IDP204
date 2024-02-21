@@ -1,5 +1,5 @@
 #include <Adafruit_MotorShield.h>
-#include "movement.h"
+#include "movements.h"
 // Movement functions included as a header file
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
