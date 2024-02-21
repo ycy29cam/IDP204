@@ -11,7 +11,7 @@ int LOut = 1, LIn = 2, RIn = 3, ROut = 4;
 int lineStates[4];
 // Declare a list to store the 4 states of 4 separate line sensors
 
-int speed = 150;
+int speed = 200;
 // Declare the default speed of the motors
 int nintyDegrees = 700;
 // Declare the time required for the robot to turn ninty degrees using the turnLeft or turnRight functions
@@ -87,6 +87,14 @@ void stop(){
   right->run(RELEASE);
 }
 
+void follow(int speed_1, int speed_2){
+  // Rotate both motors forward at the given speed
+  left->setSpeed(speed_1);
+  right->setSpeed(speed_2);
+  left->run(FORWARD);
+  right->run(FORWARD);
+}
+
 void readLine(){
   lineStates[0] = digitalRead(LOut);
   lineStates[1] = digitalRead(LIn);
@@ -100,9 +108,11 @@ void adjust(int lineStates[4]){
     forward(speed);
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
+    //follow(speed - 50, speed);
     turnRight();
   }
   else if (lineStates[1] == 1 && lineStates[2] == 0){
+    //follow(speed, speed - 50);
     turnLeft();
   }
   else{
