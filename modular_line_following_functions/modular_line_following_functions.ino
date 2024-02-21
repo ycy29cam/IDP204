@@ -6,14 +6,14 @@ Adafruit_DCMotor *left = AFMS.getMotor(1);
 Adafruit_DCMotor *right = AFMS.getMotor(2);
 // D9 and D10 are used for the motor shield
 
-int LOut = 2, LIn = 3, RIn = 4, ROut = 5;
+int LOut = 1, LIn = 2, RIn = 3, ROut = 4;
 // Declare pins used by the 4 line sensors
 int lineStates[4];
 // Declare a list to store the 4 states of 4 separate line sensors
 
 int speed = 150;
 // Declare the default speed of the motors
-int nintyDegrees = 3000;
+int nintyDegrees = 700;
 // Declare the time required for the robot to turn ninty degrees using the turnLeft or turnRight functions
 
 void setup(){
@@ -33,6 +33,17 @@ void setup(){
   Serial.println("Motor Shield found.");
 
   Serial.println("Set up done executing");
+
+  left->setSpeed(speed);
+  right->setSpeed(speed);
+  left->run(BACKWARD);
+  right->run(BACKWARD);
+  delay(1000);
+
+  left->setSpeed(0);
+  right->setSpeed(0);
+  left->run(RELEASE);
+  right->run(RELEASE);
 }
 
 void forward(int speed){
@@ -48,26 +59,24 @@ void backward(int speed){
   left->setSpeed(speed);
   right->setSpeed(speed);
   left->run(BACKWARD);
-  right->run(FORWARD);
+  right->run(BACKWARD);
 }
 
-void turnRight(int duration){
+void turnLeft(){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
   left->setSpeed(255);
   right->setSpeed(125);
   left->run(FORWARD);
   right->run(BACKWARD);
-  delay(duration);
   // Duration to be calibrated to turn the desired amount
 }
 
-void turnLeft(int duration){
+void turnRight(){
   // Rotate the robot to the left, for a given duration (which determines the angle rotated)
   left->setSpeed(125);
   right->setSpeed(255);
   left->run(BACKWARD);
   right->run(FORWARD);
-  delay(duration);
   // Duration to be calibrated to turn the desired amount
 }
 
@@ -87,14 +96,14 @@ void readLine(){
 
 void adjust(int lineStates[4]){
   // Maneuver the robot based on the states of the line sensors
-  if (lineStates[1] == 0 %% lineStates[2] == 0){
+  if (lineStates[1] == 0 && lineStates[2] == 0){
     forward(speed);
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
-    turnRight(250);
+    turnRight();
   }
-  else if (lineStates{1] == 1 && lineStates[2] == 0}){
-    turnLeft(250);
+  else if (lineStates[1] == 1 && lineStates[2] == 0){
+    turnLeft();
   }
   else{
     Serial.println("Error: both inner line sensors are on the white line");
@@ -106,7 +115,7 @@ void start_to_A(){
   // Maneuver the robot to travel from the starting point to the first pick up point
   readLine();
   while(lineStates[2] == 0){
-    Serial.println("Moving forward to locate the first line")
+    Serial.println("Moving forward to locate the first line");
     forward(speed);
   }
 
@@ -114,13 +123,14 @@ void start_to_A(){
   stop();
   delay(250);
 
-  turnLeft(nintyDegrees);
+  turnLeft();
+  delay(nintyDegrees);
   stop();
   delay(250);
 
   readLine();
   while(lineStates[3] == 0){
-    Serial.println("Moving forward to locate the first right turn")
+    Serial.println("Moving forward to locate the first right turn");
     adjust(lineStates);
     readLine();
   }
@@ -129,13 +139,14 @@ void start_to_A(){
   stop();
   delay(250);
 
-  turnRight(nintyDegrees);
+  turnRight();
+  delay(nintyDegrees);
   stop();
   delay(250);
 
   readLine();
   while(lineStates[3] == 0){
-    Serial.println("Moving forward to locate the second right turn")
+    Serial.println("Moving forward to locate the second right turn");
     adjust(lineStates);
     readLine();
   }
@@ -144,13 +155,14 @@ void start_to_A(){
   stop();
   delay(250);
 
-  turnRight(nintyDegrees);
+  turnRight();
+  delay(nintyDegrees);
   stop();
   delay(250);
 
   readLine();
   while(lineStates[0] == 0){
-    Serial.println("Moving forward to locate the left turn")
+    Serial.println("Moving forward to locate the left turn");
     adjust(lineStates);
     readLine();
   }
@@ -159,7 +171,11 @@ void start_to_A(){
   stop();
   delay(250);
 
-  turnLeft(nintyDegrees)
+  turnLeft();
+  delay(nintyDegrees);
+
+  stop();
+  delay(250);
 }
 
 void loop(){

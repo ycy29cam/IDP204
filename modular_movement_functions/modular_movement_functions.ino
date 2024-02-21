@@ -32,13 +32,13 @@ void backward(int speed){
   left->setSpeed(speed);
   right->setSpeed(speed);
   left->run(BACKWARD);
-  right->run(FORWARD);
+  right->run(BACKWARD);
 }
 
 void turnRight(int duration){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
   left->setSpeed(255);
-  right->setSpeed(125);
+  right->setSpeed(255);
   left->run(FORWARD);
   right->run(BACKWARD);
   delay(duration);
@@ -47,7 +47,7 @@ void turnRight(int duration){
 
 void turnLeft(int duration){
   // Rotate the robot to the left, for a given duration (which determines the angle rotated)
-  left->setSpeed(125);
+  left->setSpeed(255);
   right->setSpeed(255);
   left->run(BACKWARD);
   right->run(FORWARD);
@@ -73,10 +73,10 @@ void loop() {
   delay(1000);
   stop();
   delay(1000);
-  turnRight(3000);
+  turnRight(700);
   stop();
   delay(1000);
-  turnLeft(3000);
+  turnLeft(700);
   stop();
   delay(1000);
 }
