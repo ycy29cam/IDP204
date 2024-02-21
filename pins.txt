@@ -1,0 +1,12 @@
+Blue LED: 5
+Red LED: 6
+Green LED: 7
+Left Out: 1
+Left In: 2
+Right In: 3
+Right Out: 4
+Colour: 8
+Distance (2): SDA (AD4), SCL (AD5)
+Button: 0
+
+Motor shield: 9, 10
