@@ -77,6 +77,9 @@ void pick_up_block(int route_counter, bool colour_present){
         }
     }
 
+    // drive forwards a specified distance until axle is on original line
+    forward(/*time*/);
+
     // turn 90 degrees clockwise for B + (RED).(!D) + D.(BLACK)
     if ((station == 1)||((station != 3)&&(colour_present))||((station == 3)&&(!colour_present))){
         //turn 90 degrees clockwise
