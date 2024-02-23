@@ -46,16 +46,16 @@ void pick_up_block(int route_counter, bool colour_present){
 
     // decide if we're at station ABCD -> 0123
     if (route_counter < 6){
-        station = 0
+        station = 0;
     }
     else if (route_counter < 11){
-        station = 1
+        station = 1;
     }
     else if (route_counter < 16){
-        station = 2
+        station = 2;
     }
     else if (route_counter < 21){
-        station = 3
+        station = 3;
     }
 
     // initialize block distance
