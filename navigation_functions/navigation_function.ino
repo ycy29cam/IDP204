@@ -92,8 +92,8 @@ void pick_up_block(int route_counter, bool colour_present){
     // drive forwards a specified distance until axle is on original line
     forward(/*time*/);
 
-    // turn 90 degrees clockwise for B + (RED).(!D) + D.(BLACK)
-    if ((station == 1)||((station != 3)&&(colour_present))||((station == 3)&&(!colour_present))){
+    // turn 90 degrees clockwise for (A+B).R + G.(!A)
+    if (((station == 0)||(station == 1))&&((colour_present))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
     }
     else{
@@ -133,9 +133,14 @@ void drive_route(int* journey, int number_of_junctions) {
                 turnRight(/*duration*/);
             }
             else if (journey[journey_count] == 2) {
-                turnLeft(/*duration*/);
+                turnLeft();
             }
-
+            else if (journey[journey_count] == 3) {
+                ArcTurnRight();
+            }
+            else if (journey[journey_count] == 4) {
+                ArcTurnLeft(/*duration*/);
+            }
             delay(1000);
 
             journey_count++;  // increment along the specific journey
@@ -158,6 +163,8 @@ void loop() {
     // run delivery of block if present
     if (block_present) {
         // detect the block's color
+
+        // N.B. this is likely to have to be changed depending on the sensor placement in the final grabber design
         bool colour_present = colour_detect();
 
         // pick up the block and return to the track
