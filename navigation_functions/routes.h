@@ -1,27 +1,31 @@
 // this is a header file to contain the routes in the form 0, 1, 2 for the 21 routes listed in navigation_function
 // can potenitally move to storing some more global variables in here
+// routes assume that the junction turned into on the last pick up is not sensed, but the junction 
+// before the platform will be sensed after the 180 degree turn
+// the programme should run such that the final element in the route is solely a turn 
+// and no forward motion will ocur thereafter
 
-int SA[] = {};
-int AG[] = {};
-int AR[] = {};
-int AB[] = {};
-int GB[] = {};
-int RB[] = {};
-int BG[] = {};
-int BR[] = {};
-int BC[] = {};
-int GC[] = {};
-int RC[] = {};
-int CG[] = {};
-int CR[] = {};
-int CD[] = {};
-int GD[] = {};
-int RD[] = {};
-int DG[] = {};
-int DR[] = {};
-int DS[] = {};
-int GS[] = {};
-int RS[] = {};
+int SA[3] = {0,2,1};
+int AG[1] = {2};
+int AR[2] = {0,1};
+//int AB[] = {};
+int GB[4] = {0,1,2,2};
+int RB[6] = {0,0,4,0,2,1};
+int BG[4] = {2,4,0,0};
+int BR[4] = {1,3,0,0};
+//int BC[] = {};
+int GC[5] = {0,0,3,0,1};
+int RC[4] = {0,0,4,2};
+int CG[4] = {0,4,0,0};
+int CR[3] = {3,0,0};
+//int CD[] = {};
+int GD[4] = {0,1,0,1};
+int RD[3] = {0,2,2};
+int DG[3] = {0,2,0};
+int DR[2] = {1,0};
+//int DS[] = {};
+int GS[4] = {1,0,1,0};
+int RS[3] = {2,2,0};
 
 
 
