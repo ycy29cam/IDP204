@@ -1,6 +1,5 @@
 // this is a header file to contain the routes in the form 0, 1, 2 for the 21 routes listed in navigation_function
 // can potenitally move to storing some more global variables in here
-// i will fill in these routes on weds 21st (olly) 
 
 int SA[] = {};
 int AG[] = {};
@@ -23,3 +22,20 @@ int DR[] = {};
 int DS[] = {};
 int GS[] = {};
 int RS[] = {};
+
+
+
+// colour detection function
+bool colour_detect(){
+    const int InfraredSensorPin = 8;
+    pinMode(InfraredSensorPin,INPUT);
+
+    // red returns true, black returns false
+    if (digitalRead(InfraredSensorPin)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+

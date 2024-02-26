@@ -58,6 +58,10 @@ void pick_up_block(int route_counter, bool colour_present){
         station = 3;
     }
 
+    // lower grabber arm
+    lower_grabber();
+
+
     // initialize block distance
     Adafruit_VL53L0X block_distance = Adafruit_VL53L0X();
 
@@ -72,7 +76,7 @@ void pick_up_block(int route_counter, bool colour_present){
         delay(10);
     }
     
-    // use picking up block routine
+    // use picking up block routine (this should include raising the grabber, but not lowering it)
     grab_block();
 
     // reverse until original junction detected
@@ -160,9 +164,10 @@ void loop() {
         pick_up_block(route_counter, colour_present);
 
         // adjust route depending on the platform required
-        if (colour_present == black) {
+        // black block returns false, red block returns true
+        if (!colour_present) {
             route_counter += 1;
-        } else if (colour_present == red) {
+        } else if (colour_present) {
             route_counter += 2;
         }
 
