@@ -2,6 +2,7 @@
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 #include "routes.h"
+#include <Adafruit_VL53L0X.h>
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -15,7 +16,6 @@ Adafruit_DCMotor *right = AFMS.getMotor(2);
 const int left_junction_sensor = insert sensor pin;
 const int right_junction_sensor = insert sensor pin;
 */
-
 
 int routes[21] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
 int route_lengths[21] = {};
@@ -46,25 +46,37 @@ void pick_up_block(int route_counter, bool colour_present){
 
     // decide if we're at station ABCD -> 0123
     if (route_counter < 6){
-        station = 0
+        station = 0;
     }
     else if (route_counter < 11){
-        station = 1
+        station = 1;
     }
     else if (route_counter < 16){
-        station = 2
+        station = 2;
     }
     else if (route_counter < 21){
-        station = 3
+        station = 3;
     }
 
+    // lower grabber arm
+    lower_grabber();
+
+
+    // initialize block distance
+    Adafruit_VL53L0X block_distance = Adafruit_VL53L0X();
+
+    // begin ranging
+    block_distance.begin()
+    block_distance.startRangeContinuous();
+    
     // advance towards block until in grabbing range
-    while (/*TOF SENSOR INPUT*/ < BLOCK_RANGE){
+    while (block_distance.readRange() < BLOCK_RANGE){
         readLine();
         adjust(linestates);
+        delay(10);
     }
     
-    // use picking up block routine
+    // use picking up block routine (this should include raising the grabber, but not lowering it)
     grab_block();
 
     // reverse until original junction detected
@@ -76,6 +88,9 @@ void pick_up_block(int route_counter, bool colour_present){
             backward(/*at some slow speed*/);
         }
     }
+
+    // drive forwards a specified distance until axle is on original line
+    forward(/*time*/);
 
     // turn 90 degrees clockwise for B + (RED).(!D) + D.(BLACK)
     if ((station == 1)||((station != 3)&&(colour_present))||((station == 3)&&(!colour_present))){
@@ -149,9 +164,10 @@ void loop() {
         pick_up_block(route_counter, colour_present);
 
         // adjust route depending on the platform required
-        if (colour_present == black) {
+        // black block returns false, red block returns true
+        if (!colour_present) {
             route_counter += 1;
-        } else if (colour_present == red) {
+        } else if (colour_present) {
             route_counter += 2;
         }
 
