@@ -50,22 +50,22 @@ void forward(int speed){
   // Rotate both motors forward at the given speed
   left->setSpeed(speed);
   right->setSpeed(speed);
-  left->run(FORWARD);
-  right->run(FORWARD);
+  left->run(BACKWARD);
+  right->run(BACKWARD);
 }
 
 void backward(int speed){
   // Rotate both motors backward at the given speed
   left->setSpeed(speed);
   right->setSpeed(speed);
-  left->run(BACKWARD);
-  right->run(BACKWARD);
+  left->run(FORWARD);
+  right->run(FORWARD);
 }
 
 void turnLeft(){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
-  left->setSpeed(255);
-  right->setSpeed(125);
+  left->setSpeed(125);
+  right->setSpeed(200);
   left->run(FORWARD);
   right->run(BACKWARD);
   // Duration to be calibrated to turn the desired amount
@@ -73,11 +73,18 @@ void turnLeft(){
 
 void turnRight(){
   // Rotate the robot to the left, for a given duration (which determines the angle rotated)
-  left->setSpeed(125);
-  right->setSpeed(255);
+  left->setSpeed(200);
+  right->setSpeed(125);
   left->run(BACKWARD);
   right->run(FORWARD);
   // Duration to be calibrated to turn the desired amount
+}
+
+void arcTurnRight(){
+  left->setSpeed(200);
+  right->setSpeed(0);
+  left->run(BACKWARD);
+  right->run(BACKWARD);
 }
 
 void stop(){
@@ -91,8 +98,8 @@ void follow(int speed_1, int speed_2){
   // Rotate both motors forward at the given speed
   left->setSpeed(speed_1);
   right->setSpeed(speed_2);
-  left->run(FORWARD);
-  right->run(FORWARD);
+  left->run(BACKWARD);
+  right->run(BACKWARD);
 }
 
 void readLine(){
@@ -108,12 +115,12 @@ void adjust(int lineStates[4]){
     forward(speed);
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
-    //follow(speed - 50, speed);
-    turnRight();
+    follow(speed, speed - 50);
+    //turnRight();
   }
   else if (lineStates[1] == 1 && lineStates[2] == 0){
-    //follow(speed, speed - 50);
-    turnLeft();
+    follow(speed - 50, speed);
+    //turnLeft();
   }
   else{
     Serial.println("Error: both inner line sensors are on the white line");
@@ -159,21 +166,38 @@ void start_to_A(){
 void loop(){
   Serial.println("Main loop executing");
 
+  /*
   // Test level 1: whether the robot stays on the marked white line, carry out adjustments and calibrations so the adjust() function keeps the robot on the line
   readLine();
   adjust(lineStates);
+  */
 
   //Test level 2: whether the robot stays on the line and stop when a turn is detected
-  /*
+  
   readLine();
-  while(lineStates[3] == 0){
+  while(lineStates[0] == 0 && lineStates[3] == 0){
     // Keep adjusting and moving forward until a line is detected on the right
     adjust(lineStates);
     readLine();
   }
 
   stop();
-  */
+  delay(250);
+
+  arcTurnRight();
+  delay(500);
+
+  readLine();
+  while(lineStates[1] == 0){
+  arcTurnRight();
+  readLine();
+  }
+
+  arcTurnRight();
+  delay(200);
+
+  stop();
+  delay(250);
 
   // Test level 3: whether all calibrations contribute to the consistent navigation of the robot from the starting point to the first block
   /*
