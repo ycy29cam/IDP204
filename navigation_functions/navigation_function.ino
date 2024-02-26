@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
+#include "routes.h"
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -9,12 +10,15 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *left = AFMS.getMotor(1);
 Adafruit_DCMotor *right = AFMS.getMotor(2);
 
+/*
 // Pins for the junction sensor inputs
-const int left_junction_sensor = /*insert sensor pin*/;
-const int right_junction_sensor = /*insert sensor pin*/;
+const int left_junction_sensor = insert sensor pin;
+const int right_junction_sensor = insert sensor pin;
+*/
 
-int routes[] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
-int route_lengths[] = {}
+
+int routes[21] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
+int route_lengths[21] = {};
 
 // magic code
 void setup() {
@@ -35,21 +39,75 @@ void setup() {
   
 }
 
+void pick_up_block(int route_counter, bool colour_present){
+    
+    volatile bool junction_detected = 0;
+    int station; // it may be useful for this to become a global variable later
+
+    // decide if we're at station ABCD -> 0123
+    if (route_counter < 6){
+        station = 0
+    }
+    else if (route_counter < 11){
+        station = 1
+    }
+    else if (route_counter < 16){
+        station = 2
+    }
+    else if (route_counter < 21){
+        station = 3
+    }
+
+    // advance towards block until in grabbing range
+    while (/*TOF SENSOR INPUT*/ < BLOCK_RANGE){
+        readLine();
+        adjust(linestates);
+    }
+    
+    // use picking up block routine
+    grab_block();
+
+    // reverse until original junction detected
+    while (!junction_detected){
+        if (linestates[0]||linestates[3]){
+            junction_detected = 1;
+        }
+        else{
+            backward(/*at some slow speed*/);
+        }
+    }
+
+    // turn 90 degrees clockwise for B + (RED).(!D) + D.(BLACK)
+    if ((station == 1)||((station != 3)&&(colour_present))||((station == 3)&&(!colour_present))){
+        //turn 90 degrees clockwise
+    }
+    else{
+        //turn 90 degrees anticlockwise
+    }
+
+}
+
+
+
 
 void drive_route(int* journey, int number_of_junctions) {
    
     int journey_count = 0;  
     while (journey_count < number_of_junctions) {
 
-        // Move forward consistently (need to include line following here)
-        forward(255);
+        // Move forward consistently
+        readLine();
+        adjust(linestates);
 
         // Check for sensor input
+        /*
         int left_sensorValue = digitalRead(left_junction_sensor);
         int right_sensorValue = digitalRead(right_junction_sensor);
+        */
 
         // if junction sensed, should probably be done on an interrupt basis
-        if (/* insert syntax for sensing a junction */) {
+        if ((linestates[0])||(linestates[3])) {
+            
             // Sensor is triggered, stop the motors and perform the required turn
             stopMotors();
             
@@ -57,58 +115,21 @@ void drive_route(int* journey, int number_of_junctions) {
                 // robot will continue to move forwards
             }
             else if (journey[journey_count] == 1) { 
-                turn(RIGHT);
+                turnRight(/*duration*/);
             }
             else if (journey[journey_count] == 2) {
-                turn(LEFT);
+                turnLeft(/*duration*/);
             }
 
             delay(1000);
 
-            journey_count++;  // Fixed the syntax for incrementing journey_count
+            journey_count++;  // increment along the specific journey
         }
     }
 }
 
 
-void forward(int speed) {
-  // Rotate both motors forward at the given speed, will need to be determined
-  left->setSpeed(speed);
-  right->setSpeed(speed);
-  left->run(FORWARD);
-  right->run(FORWARD);
-}
-
-void stopMotors() {
-  // Release both motors to stop them
-  left->run(RELEASE);
-  right->run(RELEASE);
-}
-
-
-void turn(int direction) {
-  // Function to perform a turn in the specified direction
-  // Adjust the motor speeds and run direction based on turning requirements
-  left->setSpeed(200);
-  right->setSpeed(200);
-
-  if (direction == LEFT) {
-    left->run(BACKWARD);
-    right->run(FORWARD);
-  } else if (direction == RIGHT) {
-    left->run(FORWARD);
-    right->run(BACKWARD);
-  }
-
-  delay(500);  // Adjust the turn duration based on turn requirements again
-
-  // Stop the motors after the turn
-  stopMotors();
-}
-
-
-
-
+// main loop to be run for navigation
 void loop() {
 
     int route_counter = 0;
@@ -125,7 +146,7 @@ void loop() {
         bool colour_present = colour_detect();
 
         // pick up the block and return to the track
-        pick_up_block();
+        pick_up_block(route_counter, colour_present);
 
         // adjust route depending on the platform required
         if (colour_present == black) {
