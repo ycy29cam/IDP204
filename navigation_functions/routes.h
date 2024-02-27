@@ -5,6 +5,9 @@
 // the programme should run such that the final element in the route is solely a turn 
 // and no forward motion will ocur thereafter
 
+// N.B. 3 and 4 represent arc turns if the corners are treated as junctions
+// if they are just line followed then all 3s and 4s can be removed
+
 int SA[3] = {0,2,1};
 int AG[1] = {2};
 int AR[2] = {0,1};

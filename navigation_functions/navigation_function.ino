@@ -39,28 +39,13 @@ void setup() {
   
 }
 
-void pick_up_block(int route_counter, bool colour_present){
+void approach_block(){
     
-    volatile bool junction_detected = 0;
-    int station; // it may be useful for this to become a global variable later
-
-    // decide if we're at station ABCD -> 0123
-    if (route_counter < 6){
-        station = 0;
-    }
-    else if (route_counter < 11){
-        station = 1;
-    }
-    else if (route_counter < 16){
-        station = 2;
-    }
-    else if (route_counter < 21){
-        station = 3;
-    }
+    // initialise a block range, this can be moved into a header file later
+    int BLOCK_RANGE = ;
 
     // lower grabber arm
     lower_grabber();
-
 
     // initialize block distance
     Adafruit_VL53L0X block_distance = Adafruit_VL53L0X();
@@ -79,10 +64,32 @@ void pick_up_block(int route_counter, bool colour_present){
     // use picking up block routine (this should include raising the grabber, but not lowering it)
     grab_block();
 
+}
+
+
+
+void exit(int route_counter, bool colour_present){
+    int station; // it may be useful for this to become a global variable later
+    volatile bool junction_detected = false;
+
+    // decide if we're at station ABCD -> 0123
+    if (route_counter < 6){
+        station = 0;
+    }
+    else if (route_counter < 11){
+        station = 1;
+    }
+    else if (route_counter < 16){
+        station = 2;
+    }
+    else if (route_counter < 21){
+        station = 3;
+    }
+
     // reverse until original junction detected
     while (!junction_detected){
         if (linestates[0]||linestates[3]){
-            junction_detected = 1;
+            junction_detected = true;
         }
         else{
             backward(/*at some slow speed*/);
@@ -100,9 +107,21 @@ void pick_up_block(int route_counter, bool colour_present){
         //turn 90 degrees anticlockwise
     }
 
+
+
 }
 
 
+bool block_detect(){
+
+    while(){
+        readLine();
+        adjust(linestates);
+    }
+
+
+
+}
 
 
 void drive_route(int* journey, int number_of_junctions) {
@@ -160,15 +179,17 @@ void loop() {
     // check for block
     bool block_present = block_detect();
 
-    // run delivery of block if present
+    // run delivery of block if present (may have to remove this functionality if there is always going to be a block present)
     if (block_present) {
-        // detect the block's color
-
-        // N.B. this is likely to have to be changed depending on the sensor placement in the final grabber design
-        bool colour_present = colour_detect();
 
         // pick up the block and return to the track
-        pick_up_block(route_counter, colour_present);
+        approach_block();
+
+        // detect the block's color
+        bool colour_present = colour_detect();
+
+        // exit station
+        exit(route_counter, colour_present);
 
         // adjust route depending on the platform required
         // black block returns false, red block returns true
