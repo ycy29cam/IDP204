@@ -16,6 +16,14 @@ int speed = 200;
 int nintyDegrees = 700;
 // Declare the time required for the robot to turn ninty degrees using the turnLeft or turnRight functions
 
+int leftWeightArray[10] = {0};
+int rightWeightArray[10] = {0};
+// Declare arrays to store past values of the line sensor states, for weighting the turn
+int head = 0;
+// Declare a variable to store the position in the weight arrays for the next recording
+int arraySize = 0;
+// Declare a variable to store the length of the weight arrays
+
 void setup(){
   Serial.begin(9600);
 
@@ -30,6 +38,7 @@ void setup(){
     Serial.println("Could not find Motor Shield. Check wiring.");
     while (1);
   }
+
   Serial.println("Motor Shield found.");
 
   Serial.println("Set up done executing");
@@ -109,17 +118,40 @@ void readLine(){
   lineStates[3] = digitalRead(ROut);
 }
 
+void recordLineValue(int lineStates[4]){
+  leftWeightArray[head] = lineStates[1];
+  rightWeightArray[head] = lineStates[2];
+  head = (head + 1) % 10;
+  if (arraySize < 10){
+    arraySize++ ;
+  }
+}
+
+int sumWeight(int weight[]){
+  int total = 0;
+  for (int i = 0; i < arraySize; i++) {
+    total += weight[i];
+  }
+  return (total * 30 / 2) + 30;
+}
+
 void adjust(int lineStates[4]){
+  recordLineValue(lineStates);
+  int leftWeight = sumWeight(leftWeightArray);
+  int rightWeight = sumWeight(rightWeightArray);
+  Serial.print(leftWeight);
+  Serial.println(rightWeight);
+
   // Maneuver the robot based on the states of the line sensors
   if (lineStates[1] == 0 && lineStates[2] == 0){
     forward(speed);
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
-    follow(speed, speed - 50);
+    follow(speed, speed - rightWeight);
     //turnRight();
   }
   else if (lineStates[1] == 1 && lineStates[2] == 0){
-    follow(speed - 50, speed);
+    follow(speed - leftWeight, speed);
     //turnLeft();
   }
   else{
@@ -166,14 +198,12 @@ void start_to_A(){
 void loop(){
   Serial.println("Main loop executing");
 
-  /*
   // Test level 1: whether the robot stays on the marked white line, carry out adjustments and calibrations so the adjust() function keeps the robot on the line
   readLine();
   adjust(lineStates);
-  */
 
   //Test level 2: whether the robot stays on the line and stop when a turn is detected
-  
+  /*
   readLine();
   while(lineStates[0] == 0 && lineStates[3] == 0){
     // Keep adjusting and moving forward until a line is detected on the right
@@ -198,6 +228,7 @@ void loop(){
 
   stop();
   delay(250);
+  */
 
   // Test level 3: whether all calibrations contribute to the consistent navigation of the robot from the starting point to the first block
   /*

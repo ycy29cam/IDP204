@@ -9,4 +9,4 @@ Colour: 8
 Distance (2): SDA (AD4), SCL (AD5)
 Button: 0
 
-Motor shield: 9, 10
+Servo: 9
