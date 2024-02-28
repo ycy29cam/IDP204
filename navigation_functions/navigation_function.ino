@@ -42,9 +42,10 @@ void setup() {
 void approach_block(){
     
     // initialise a block range, this can be moved into a header file later
-    int BLOCK_RANGE = ;
+    int BLOCK_RANGE = 500;
 
     // lower grabber arm
+    // CURRENTLY NOT PROGRAMMED
     lower_grabber();
 
     // initialize block distance
@@ -58,15 +59,14 @@ void approach_block(){
     while (block_distance.readRange() < BLOCK_RANGE){
         readLine();
         adjust(linestates);
-        delay(10);
+        delay(10); //Probably don't need this
     }
     
     // use picking up block routine (this should include raising the grabber, but not lowering it)
+    // CURRENTLY NOT PROGRAMMED
     grab_block();
 
 }
-
-
 
 void exit(int route_counter, bool colour_present){
     int station; // it may be useful for this to become a global variable later
@@ -87,42 +87,45 @@ void exit(int route_counter, bool colour_present){
     }
 
     // reverse until original junction detected
+    /*
     while (!junction_detected){
         if (linestates[0]||linestates[3]){
             junction_detected = true;
         }
         else{
-            backward(/*at some slow speed*/);
+            backward(speed);
         }
     }
+    */
+
+   readLine();
+   while(lineStates[0] == 0 && lineStates[3] == 0){
+    backward(speed);
+    readLine();
+   }
 
     // drive forwards a specified distance until axle is on original line
-    forward(/*time*/);
+    /*
+    forward(speed); // Probably don't need this, not pivoting about the junction
+    */
 
     // turn 90 degrees clockwise for (A+B).R + G.(!A)
     if (((station == 0)||(station == 1))&&((colour_present))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
+        arcTurnRight();
     }
     else{
         //turn 90 degrees anticlockwise
+        arcTurnLeft();
     }
-
-
-
 }
 
-
 bool block_detect(){
-
     while(){
         readLine();
         adjust(linestates);
     }
-
-
-
 }
-
 
 void drive_route(int* journey, int number_of_junctions) {
    
