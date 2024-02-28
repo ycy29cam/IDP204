@@ -3,6 +3,8 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 #include "routes.h"
 #include <Adafruit_VL53L0X.h>
+#include <vector>
+
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -17,8 +19,8 @@ const int left_junction_sensor = insert sensor pin;
 const int right_junction_sensor = insert sensor pin;
 */
 
-int routes[17] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
-int route_lengths[17] = {3,1,2,4,6,4,4,5,4,4,3,4,3,3,2,4,3};
+int* routes[17] = {SA, AG, AR, GB, RB, BG, BR, GC, RC, CG, CR, GD, RD, DG, DR, GS, RS};
+int route_lengths[17] = {3, 1, 2, 4, 6, 4, 4, 5, 4, 4, 3, 4, 3, 3, 2, 4, 3};
 
 // magic code
 void setup() {
