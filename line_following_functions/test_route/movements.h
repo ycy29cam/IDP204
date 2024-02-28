@@ -22,6 +22,13 @@ int head = 0;
 int arraySize = 0;
 // Declare a variable to store the length of the weight arrays
 
+void readLine(){
+  lineStates[0] = digitalRead(LOut);
+  lineStates[1] = digitalRead(LIn);
+  lineStates[2] = digitalRead(RIn);
+  lineStates[3] = digitalRead(ROut);
+}
+
 void forward(int speed){
   // Rotate both motors forward at the given speed
   left->setSpeed(speed);
@@ -40,6 +47,7 @@ void backward(int speed){
 
 void turnLeft(){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
+  // This is used for sharp turns, ie. approaching the block
   left->setSpeed(125);
   right->setSpeed(200);
   left->run(FORWARD);
@@ -49,6 +57,7 @@ void turnLeft(){
 
 void turnRight(){
   // Rotate the robot to the left, for a given duration (which determines the angle rotated)
+  // This is used for sharp turns, ie. approaching the block
   left->setSpeed(200);
   right->setSpeed(125);
   left->run(BACKWARD);
@@ -57,6 +66,7 @@ void turnRight(){
 }
 
 void arcTurnRight(){
+  // This is used for gentle turns (cutting the corners), ie. ordinary junctions
   left->setSpeed(200);
   right->setSpeed(0);
   left->run(BACKWARD);
@@ -64,6 +74,7 @@ void arcTurnRight(){
 }
 
 void arcTurnLeft(){
+  // This is used for gentle turns (cutting the corners), ie. ordinary junctions
   left->setSpeed(0);
   right->setSpeed(200);
   left->run(BACKWARD);
@@ -77,19 +88,44 @@ void stop(){
   right->run(RELEASE);
 }
 
+void turn(int direction){
+  // Combined turning functions, with delays and line detection
+  // 1 indicates a right turn and 2 indicates a left turn
+  if (direction == 1){
+    arcTurnRight();
+    delay(1000);
+
+    readLine();
+    while(lineStates[1] == 0){
+    arcTurnRight();
+    readLine();
+    }
+
+    arcTurnRight();
+    delay(200);
+  }
+  else if (direction == 2){
+    arcTurnLeft();
+    delay(1000);
+
+    readLine();
+    while(lineStates[2] == 0){
+    Serial.println("Turning left");
+    arcTurnLeft();
+    readLine();
+    }
+
+    arcTurnLeft();
+    delay(200);
+  }
+}
+
 void follow(int speed_1, int speed_2){
   // Rotate both motors forward at the given speed
   left->setSpeed(speed_1);
   right->setSpeed(speed_2);
   left->run(BACKWARD);
   right->run(BACKWARD);
-}
-
-void readLine(){
-  lineStates[0] = digitalRead(LOut);
-  lineStates[1] = digitalRead(LIn);
-  lineStates[2] = digitalRead(RIn);
-  lineStates[3] = digitalRead(ROut);
 }
 
 void recordLineValue(int lineStates[4]){
