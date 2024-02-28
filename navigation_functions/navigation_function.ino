@@ -42,6 +42,7 @@ void setup() {
 void approach_block(){
     
     // initialise a block range, this can be moved into a header file later
+    int BLOCK_RANGE = 300;
     int BLOCK_RANGE = 500;
 
     // lower grabber arm

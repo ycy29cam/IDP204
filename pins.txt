@@ -1,12 +1,12 @@
-Blue LED: 5
-Red LED: 6
-Green LED: 7
-Left Out: 1
-Left In: 2
-Right In: 3
-Right Out: 4
-Colour: 8
-Distance (2): SDA (AD4), SCL (AD5)
-Button: 0
+Blue LED: 6
+Red LED: 7
+Green LED: 8
+Left Out: 2
+Left In: 3
+Right In: 4
+Right Out: 5
+Colour: 11
+Time of flight (2): SDA (AD4), SCL (AD5)
+Button: 13
 
-Servo: 9
+Servo: 9 (closing grabber), 10 (raising grabber)
