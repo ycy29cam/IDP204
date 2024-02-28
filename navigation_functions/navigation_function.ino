@@ -17,8 +17,8 @@ const int left_junction_sensor = insert sensor pin;
 const int right_junction_sensor = insert sensor pin;
 */
 
-int routes[21] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
-int route_lengths[21] = {};
+int routes[17] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
+int route_lengths[17] = {3,1,2,4,6,4,4,5,4,4,3,4,3,3,2,4,3};
 
 // magic code
 void setup() {
@@ -182,13 +182,13 @@ void loop() {
     // run delivery of block if present (may have to remove this functionality if there is always going to be a block present)
     if (block_present) {
 
-        // pick up the block and return to the track
-        approach_block();
+        // approach the block and pick it up
+        approach_block(); 
 
         // detect the block's color
         bool colour_present = colour_detect();
 
-        // exit station
+        // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
         exit(route_counter, colour_present);
 
         // adjust route depending on the platform required
