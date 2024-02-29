@@ -166,7 +166,6 @@ void loop() {
     // drive to the first checkpoint
     drive_route(routes[0], route_lengths[0]);
 
-
     // approach the block and pick it up
     approach_block(); 
 
