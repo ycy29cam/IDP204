@@ -1,3 +1,6 @@
+#include <Servo.h>          // Need to include this at the top of the file
+Servo myservo;              // create servo object to control a servo
+
 int InfraredSensorPin = 8;
 
 void approach_block(int direction){
@@ -105,6 +108,32 @@ void leave(bool colour_present){
     else if (colour_present) {
         routeCounter += 2;
     }
+}
+
+void grab_block(){                            // Function to contract the block grabbing arms
+  int pos = 0;                                // variable to store the servo position
+  myservo.attach(9);                          // attaches the servo on pin 9 to the servo object for grabbing
+  for (pos = 0; pos <= 20; pos += 1) {        // goes from 0 degrees to 20 degrees in steps of 1 degree
+    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
+    delay(3);                                // waits 3 ms for the servo to reach the position
+  }
+}
+
+void lower_block(){                           // Function to lower the block grabbing arms from a raised position
+  int pos = 0;                                // variable to store the servo position
+  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
+  for (pos = 0; pos <= 90; pos += 1) {        // goes from 0 degrees to 90 degrees in steps of 1 degree
+    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
+    delay(3);                                 // waits 3 ms for the servo to reach the position
+  }
+}
+void raise_block(){                           // Function to raise the block grabbing arms from a lowered position
+  int pos = 90;                               // variable to store the servo position
+  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
+  for (pos = 90; pos >= 0; pos -= 1) {        // goes from 90 degrees to 0 degrees in steps of 1 degree
+    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
+    delay(3);                                 // waits 3 ms for the servo to reach the position
+  }
 }
 
 void tellColour(int colour_present){
