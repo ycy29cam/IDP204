@@ -3,6 +3,9 @@
 #include "routes.h"
 #include "block_handle.h"
 
+int routeCounter = 0;
+int red = 7;
+int green = 8;
 int button = 13;
 int routeNumber = 17; // Total number of routes
 
@@ -15,6 +18,8 @@ void setup() {
   pinMode(ROut, INPUT);
   pinMode(InfraredSensorPin,INPUT);
   pinMode(button, INPUT);
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
 
   // Magical code (but why?)
   // https://forum.arduino.cc/t/my-void-setup-is-repeating/669468/7 (potential reason?)
@@ -32,9 +37,7 @@ void loop() {
 
   Serial.print("Begin");
 
-  int routeCounter = 0;
-
-  while(routeCounter <= routeNumber){
+  while(routeCounter < routeNumber){
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     // approach the block and pick it up
     approach_block(); // Direction to be specified
@@ -42,8 +45,17 @@ void loop() {
     // detect the block's color
     bool colour_present = colour_detect();
 
+    tellColour(colour_present); // Light up the corresponding LED
+
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
-    exit(route_counter, colour_present);
+    leave(colour_present);
+    // routeCounter should be updated in the exit function
+
+    drive_route(routes[routeCounter],route_lengths[routeCounter]);
+
+    // CURRENTLY NOT PROGRAMMED
+    drop_off_block(); // Increase route counter by 3
+    turnOffLED();
   }
 }
 // Not done Not done Not done

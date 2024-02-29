@@ -133,3 +133,43 @@ void adjust(int lineStates[4]){
   }
   readLine();
 }
+
+void drive_route(int* journey, int number_of_junctions) {
+   
+    int journey_count = 0;  
+    while (journey_count < number_of_junctions) {
+
+        // Move forward consistently
+        readLine();
+        while(lineStates[0] == 0 && lineStates[3] == 0){
+            adjust(lineStates);
+            readLine();
+        }
+
+        stop();
+        delay(250);
+
+        if (journey[journey_count] == 0) {
+                // robot will continue to move forwards
+            forward(250);
+        }
+        else if (journey[journey_count] == 1) { 
+            arcTurnRight();
+        }
+        else if (journey[journey_count] == 2) {
+            arcTurnLeft();
+        }
+        /*
+        else if (journey[journey_count] == 3) {
+            ArcTurnRight();
+        }
+        else if (journey[journey_count] == 4) {
+            ArcTurnLeft();
+        }
+        */
+
+        stop();
+        delay(250);
+        journey_count++;
+    }
+}

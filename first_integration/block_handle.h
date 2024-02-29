@@ -1,37 +1,4 @@
-void exit(int route_counter, bool colour_present){
-    int station; // it may be useful for this to become a global variable later
-    volatile bool junction_detected = false;
-
-    // decide if we're at station ABCD -> 0123
-    if (route_counter < 6){
-        station = 0;
-    }
-    else if (route_counter < 11){
-        station = 1;
-    }
-    else if (route_counter < 16){
-        station = 2;
-    }
-    else if (route_counter < 21){
-        station = 3;
-    }
-
-   readLine();
-   while(lineStates[0] == 0 && lineStates[3] == 0){
-    backward(speed);
-    readLine();
-   }
-
-    // turn 90 degrees clockwise for (A+B).R + G.(!A)
-    if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
-        //turn 90 degrees clockwise
-        arcTurnRight();
-    }
-    else{
-        //turn 90 degrees anticlockwise
-        arcTurnLeft();
-    }
-}
+int InfraredSensorPin = 8;
 
 void approach_block(int direction){
 
@@ -66,7 +33,7 @@ void approach_block(int direction){
 
     // lower grabber arm
     // CURRENTLY NOT PROGRAMMED
-    lower_grabber();
+    lower_grabber(); // Not needed if the grabber is down by default, after a drop off
 
     // initialize block distance
     Adafruit_VL53L0X block_distance = Adafruit_VL53L0X();
@@ -89,8 +56,6 @@ void approach_block(int direction){
 
 // colour detection function
 bool colour_detect(){
-    const int InfraredSensorPin = 8;
-    pinMode(InfraredSensorPin,INPUT);
 
     // red returns true, black returns false
     if (digitalRead(InfraredSensorPin)){
@@ -99,4 +64,59 @@ bool colour_detect(){
     else{
         return false;
     }
+}
+
+void leave(bool colour_present){
+    int station; // it may be useful for this to become a global variable later
+
+    // decide if we're at station ABCD -> 0123
+    if (routeCounter < 6){
+        station = 0;
+    }
+    else if (routeCounter < 11){
+        station = 1;
+    }
+    else if (routeCounter < 16){
+        station = 2;
+    }
+    else if (routeCounter < 21){
+        station = 3;
+    }
+
+   readLine();
+   while(lineStates[0] == 0 && lineStates[3] == 0){
+    backward(speed);
+    readLine();
+   }
+
+    // turn 90 degrees clockwise for (A+B).R + G.(!A)
+    if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
+        //turn 90 degrees clockwise
+        arcTurnRight();
+    }
+    else{
+        //turn 90 degrees anticlockwise
+        arcTurnLeft();
+    }
+
+    if (!colour_present) {
+        routeCounter += 1;
+    } 
+    else if (colour_present) {
+        routeCounter += 2;
+    }
+}
+
+void tellColour(int colour_present){
+    if(!colour_present){
+        digitalWrite(green, HIGH);
+    }
+    else if (colour_present){
+        digitalWrite(red, HIGH);
+    }
+}
+
+void turnOffLED(){
+    digitalWrite(red, LOW);
+    digitalWrite(green, LOW);
 }
