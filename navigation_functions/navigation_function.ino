@@ -3,6 +3,8 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 #include "routes.h"
 #include <Adafruit_VL53L0X.h>
+#include <vector>
+
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -17,8 +19,8 @@ const int left_junction_sensor = insert sensor pin;
 const int right_junction_sensor = insert sensor pin;
 */
 
-int routes[17] = {SA, AG, AR, AB, GB, RB, BG, BR, BC, GC, RC, CG, CR, CD, GD, RD, DG, DR, DS, GS, RS};
-int route_lengths[17] = {3,1,2,4,6,4,4,5,4,4,3,4,3,3,2,4,3};
+int* routes[17] = {SA, AG, AR, GB, RB, BG, BR, GC, RC, CG, CR, GD, RD, DG, DR, GS, RS};
+int route_lengths[17] = {3, 1, 2, 4, 6, 4, 4, 5, 4, 4, 3, 4, 3, 3, 2, 4, 3};
 
 // magic code
 void setup() {
@@ -121,12 +123,6 @@ void exit(int route_counter, bool colour_present){
     }
 }
 
-bool block_detect(){
-    while(){
-        readLine();
-        adjust(linestates);
-    }
-}
 
 void drive_route(int* journey, int number_of_junctions) {
    
@@ -180,40 +176,31 @@ void loop() {
     // drive to the first checkpoint
     drive_route(routes[0], route_lengths[0]);
 
-    // check for block
-    bool block_present = block_detect();
+    // approach the block and pick it up
+    approach_block(); 
 
-    // run delivery of block if present (may have to remove this functionality if there is always going to be a block present)
-    if (block_present) {
+    // detect the block's color
+    bool colour_present = colour_detect();
 
-        // approach the block and pick it up
-        approach_block(); 
+    // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
+    exit(route_counter, colour_present);
 
-        // detect the block's color
-        bool colour_present = colour_detect();
-
-        // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
-        exit(route_counter, colour_present);
-
-        // adjust route depending on the platform required
-        // black block returns false, red block returns true
-        if (!colour_present) {
-            route_counter += 1;
-        } else if (colour_present) {
-            route_counter += 2;
-        }
-
-        // deliver block to the platform and proceed to the next location
+    // adjust route depending on the platform required
+    // black block returns false, red block returns true
+    
+    if (!colour_present) {
+        route_counter += 1;
         drive_route(routes[route_counter], route_lengths[route_counter]);
         drop_off_block();
-        route_counter += 3;
-        drive_route(routes[route_counter], route_lengths[route_counter]);
-    }
-
-    // if no block detected, proceed to the next station
-    else if (!block_present) {
-        route_counter += 3;
-        drive_route(routes[route_counter], route_lengths[route_counter]);
         route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+        route_counter += 1;
+    } 
+    else if (colour_present) {
+        route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+        drop_off_block();
+        route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
     }
 }

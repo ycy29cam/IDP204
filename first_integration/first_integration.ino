@@ -48,14 +48,28 @@ void loop() {
     tellColour(colour_present); // Light up the corresponding LED
 
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
-    leave(colour_present);
-    // routeCounter should be updated in the exit function
-
-    drive_route(routes[routeCounter],route_lengths[routeCounter]);
-
-    // CURRENTLY NOT PROGRAMMED
-    drop_off_block(); // Increase route counter by 3
-    turnOffLED();
+    exit(route_counter, colour_present);
+  
+    // adjust route depending on the platform required
+    // black block returns false, red block returns true
+    
+    if (!colour_present) {
+        route_counter += 1;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+        drop_off_block();
+        route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+        route_counter += 1;
+    } 
+    else if (colour_present) {
+        route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+        drop_off_block();
+        route_counter += 2;
+        drive_route(routes[route_counter], route_lengths[route_counter]);
+    }
+  
+  
   }
 }
 // Not done Not done Not done
