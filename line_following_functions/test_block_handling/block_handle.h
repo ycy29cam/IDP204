@@ -3,7 +3,7 @@ Servo myservo;              // create servo object to control a servo
 
 int InfraredSensorPin = 8;
 
-void approach_block(int direction){
+/**void approach_block(int direction){
 
     forward(600);
 
@@ -46,11 +46,13 @@ void approach_block(int direction){
     block_distance.startRangeContinuous();
     
     // advance towards block until in grabbing range
-    while (block_distance.readRange() < BLOCK_RANGE){
+    while (block_distance.readRange() > BLOCK_RANGE){
         readLine();
         adjust(linestates);
         delay(10); //Probably don't need this
     }
+
+    stop();
     
     // use picking up block routine (this should include raising the grabber, but not lowering it)
     // CURRENTLY NOT PROGRAMMED
@@ -109,34 +111,38 @@ void leave(bool colour_present){
         routeCounter += 2;
     }
 }
+**/
 
-void grab_block(){                            // Function to contract the block grabbing arms
-  int pos = 0;                                // variable to store the servo position
-  myservo.attach(9);                          // attaches the servo on pin 9 to the servo object for grabbing
-  for (pos = 0; pos <= 20; pos += 1) {        // goes from 0 degrees to 20 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                // waits 3 ms for the servo to reach the position
-  }
+void grab_block(int n){                       //Function to contract the grabber arms
+  myservo.attach(9);
+  myservo.write(n);
+  delay(15);                         
 }
 
 void lower_block(){                           // Function to lower the block grabbing arms from a raised position
-  int pos = 0;                                // variable to store the servo position
-  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
-  for (pos = 0; pos <= 90; pos += 1) {        // goes from 0 degrees to 90 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                 // waits 3 ms for the servo to reach the position
+  int pos = 0;                               
+  myservo.attach(9);                         
+  for (pos = 0; pos <= 90; pos += 1) {        
+    myservo.write(pos);                       
+    delay(15);                                 
   }
 }
 void raise_block(){                           // Function to raise the block grabbing arms from a lowered position
-  int pos = 90;                               // variable to store the servo position
-  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
-  for (pos = 90; pos >= 0; pos -= 1) {        // goes from 90 degrees to 0 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                 // waits 3 ms for the servo to reach the position
+  int pos = 93;                               
+  myservo.attach(9);                         
+  for (pos = 93; pos >= 30; pos -= 1) {       
+    myservo.write(pos);                       
+    delay(15);                                 
   }
 }
 
-void tellColour(int colour_present){
+void 
+
+void set_block_position(){
+
+}
+
+/**void tellColour(int colour_present){      //Function to detect colour of block
     if(!colour_present){
         digitalWrite(green, HIGH);
     }
@@ -145,7 +151,7 @@ void tellColour(int colour_present){
     }
 }
 
-void turnOffLED(){
+void turnOffLED(){                             //
     digitalWrite(red, LOW);
     digitalWrite(green, LOW);
-}
+}**/
