@@ -110,30 +110,34 @@ void leave(bool colour_present){
     }
 }
 
-void grab_block(){                            // Function to contract the block grabbing arms
-  int pos = 0;                                // variable to store the servo position
-  myservo.attach(9);                          // attaches the servo on pin 9 to the servo object for grabbing
-  for (pos = 0; pos <= 20; pos += 1) {        // goes from 0 degrees to 20 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                // waits 3 ms for the servo to reach the position
-  }
+////////////////////////////////////////////////////
+/** FUNCTIONS TO CONTROL THE GRABBER ARMS **/
+////////////////////////////////////////////////////
+
+void rotate_arms_to(int n){                       //Function to contract the grabber arms
+  myservo.attach(9);                          //90 is the down positions and 150 is the up position for the grabber arms
+  myservo.write(n);
+  delay(15);                         
 }
 
-void lower_block(){                           // Function to lower the block grabbing arms from a raised position
-  int pos = 0;                                // variable to store the servo position
-  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
-  for (pos = 0; pos <= 90; pos += 1) {        // goes from 0 degrees to 90 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                 // waits 3 ms for the servo to reach the position
-  }
+void lift_arms(){                           //Function to lift arms to raised position
+  rotate_arms_to(150);
+  delay(1000);
 }
-void raise_block(){                           // Function to raise the block grabbing arms from a lowered position
-  int pos = 90;                               // variable to store the servo position
-  myservo.attach(10);                         // attaches the servo on pin 10 to the servo object for grabbing
-  for (pos = 90; pos >= 0; pos -= 1) {        // goes from 90 degrees to 0 degrees in steps of 1 degree
-    myservo.write(pos);                       // tell servo to go to position in variable 'pos'
-    delay(15);                                 // waits 3 ms for the servo to reach the position
-  }
+
+void lower_arms(){                          //Function to lower arms to bottom position
+  rotate_arms_to(90);
+  delay(1000);
+}
+
+void close_arms(){                        //Function to close grabber arms from open position
+  rotate_arms_to(60);
+  delay(1000);
+}
+
+void open_arms(){                         //Function to open grabber arms from closed position
+  rotate_arms_to(110);
+  delay(1000);
 }
 
 void tellColour(int colour_present){
