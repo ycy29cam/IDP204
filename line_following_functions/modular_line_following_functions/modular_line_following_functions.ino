@@ -6,7 +6,7 @@ Adafruit_DCMotor *left = AFMS.getMotor(1);
 Adafruit_DCMotor *right = AFMS.getMotor(2);
 // D9 and D10 are used for the motor shield
 
-int LOut = 1, LIn = 2, RIn = 3, ROut = 4;
+int LOut = 2, LIn = 3, RIn = 4, ROut = 5;
 // Declare pins used by the 4 line sensors
 int lineStates[4];
 // Declare a list to store the 4 states of 4 separate line sensors
@@ -164,11 +164,13 @@ void loop(){
   Serial.println("Main loop executing");
 
   // Test level 1: whether the robot stays on the marked white line, carry out adjustments and calibrations so the adjust() function keeps the robot on the line
+  /*
   readLine();
   adjust(lineStates);
+  */
 
   //Test level 2: whether the robot stays on the line and stop when a turn is detected
-  /*
+  
   readLine();
   while(lineStates[0] == 0 && lineStates[3] == 0){
     // Keep adjusting and moving forward until a line is detected on the right
@@ -180,7 +182,7 @@ void loop(){
   delay(250);
 
   arcTurnRight(); 
-  delay(500);
+  delay(900);
 
   readLine();
   while(lineStates[1] == 0){
@@ -193,7 +195,6 @@ void loop(){
 
   stop();
   delay(250);
-  */
 
   // Test level 3: whether all calibrations contribute to the consistent navigation of the robot from the starting point to the first block
   /*
