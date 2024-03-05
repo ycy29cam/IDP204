@@ -3,10 +3,10 @@
 #include "routes.h"
 #include "block_handle.h"
 
-int routeCounter = 0;
-int red = 7;
-int green = 8;
-int button = 13;
+int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
+int red = 7; // Red LED
+int green = 8; // Green LED
+int button = 13; // Button
 int routeNumber = 17; // Total number of routes
 
 void setup() {
@@ -20,6 +20,7 @@ void setup() {
   pinMode(button, INPUT);
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
+  // Declare all inputs and outputs
 
   // Magical code (but why?)
   // https://forum.arduino.cc/t/my-void-setup-is-repeating/669468/7 (potential reason?)
@@ -38,10 +39,13 @@ void loop() {
   Serial.print("Begin");
 
   while(routeCounter < routeNumber){
+    // While the current route index is in range of the 2D array
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
+    // Drive the robot according to the route, to a pick up point, from either the start or the drop off points
+
     if (routeCounter >= 4){checkRoute(colour_present); }
     // approach the block and pick it up
-    approach_block(); // Direction to be specified
+    approach_block(block_direction); // Direction to be specified
 
     // detect the block's color
     // black block returns false, red block returns true

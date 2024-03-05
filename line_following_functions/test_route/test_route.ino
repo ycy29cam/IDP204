@@ -1,37 +1,6 @@
 #include <Adafruit_MotorShield.h>
 #include "movements.h"
 
-void turn(int direction){
-// 1 indicates a right turn and 2 indicates a left turn
-  if (direction == 1){
-    arcTurnRight();
-    delay(1000);
-
-    readLine();
-    while(lineStates[1] == 0){
-    arcTurnRight();
-    readLine();
-    }
-
-    arcTurnRight();
-    delay(200);
-  }
-  else if (direction == 2){
-    arcTurnLeft();
-    delay(1000);
-
-    readLine();
-    while(lineStates[2] == 0){
-    Serial.println("Turning left");
-    arcTurnLeft();
-    readLine();
-    }
-
-    arcTurnLeft();
-    delay(200);
-  }
-}
-
 long startLine;
 
 void setup() {
@@ -93,7 +62,7 @@ void loop() {
   //turn(1);
 
   forward(speed);
-  delay(700);
+  delay(500);
   turnRight();
   delay(700);
   readLine();
