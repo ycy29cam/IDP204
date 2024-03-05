@@ -51,7 +51,7 @@ void loop() {
 
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
     // adjust route depending on the platform required
-    exit(route_counter, colour_present); // Increment routeCounter by 1 if black, 2 if red
+    leave(route_counter, colour_present); // Increment routeCounter by 1 if black, 2 if red
 
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     dropOffBlock(); // Increment routeCounter by 2 (drop off point to the next pick up point)
