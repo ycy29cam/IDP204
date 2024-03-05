@@ -1,7 +1,7 @@
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 
-Adafruit_DCMotor *left = AFMS.getMotor(1);
-Adafruit_DCMotor *right = AFMS.getMotor(2);
+Adafruit_DCMotor *right = AFMS.getMotor(1);
+Adafruit_DCMotor *left = AFMS.getMotor(2);
 // D9 and D10 are used for the motor shield
 
 int LOut = 2, LIn = 3, RIn = 4, ROut = 5;
@@ -68,16 +68,16 @@ void turnRight(){
 void arcTurnRight(){
   // This is used for gentle turns (cutting the corners), ie. ordinary junctions
   left->setSpeed(200);
-  right->setSpeed(0);
+  right->setSpeed(80);
   left->run(BACKWARD);
-  right->run(BACKWARD);
+  right->run(FORWARD);
 }
 
 void arcTurnLeft(){
   // This is used for gentle turns (cutting the corners), ie. ordinary junctions
-  left->setSpeed(0);
+  left->setSpeed(80);
   right->setSpeed(200);
-  left->run(BACKWARD);
+  left->run(FORWARD);
   right->run(BACKWARD);
 }
 
@@ -100,9 +100,6 @@ void turn(int direction){
     arcTurnRight();
     readLine();
     }
-
-    arcTurnRight();
-    delay(200);
   }
   else if (direction == 2){
     arcTurnLeft();
@@ -114,9 +111,6 @@ void turn(int direction){
     arcTurnLeft();
     readLine();
     }
-
-    arcTurnLeft();
-    delay(200);
   }
 }
 
@@ -157,13 +151,13 @@ void adjust(int lineStates[4]){
     forward(speed);
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
-    //follow(speed, speed - rightWeight);
-    follow(speed - LeftWeight, speed);
+    follow(speed, speed - rightWeight);
+    //follow(speed - rightWeight, speed);
     //turnRight();
   }
   else if (lineStates[1] == 1 && lineStates[2] == 0){
-    //follow(speed - leftWeight, speed);
-    follow(speed, speed - RightWeight);
+    follow(speed - leftWeight, speed);
+    //follow(speed, speed - rightWeight);
     //turnLeft();
   }
   else{

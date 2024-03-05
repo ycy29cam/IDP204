@@ -24,7 +24,7 @@ void setup() {
 
 }
 
-void loop() {
+void loop() { 
   Serial.println("Main loop running");
   delay(5000);
 
