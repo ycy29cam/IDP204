@@ -1,12 +1,30 @@
 int InfraredSensorPin = 8;
 long startLine;
 
+void tellColour(int colour_present){
+    if(!colour_present){
+        digitalWrite(green, HIGH);
+    }
+    else if (colour_present){
+        digitalWrite(red, HIGH);
+    }
+}
+
+void turnOffLED(){
+    digitalWrite(red, LOW);
+    digitalWrite(green, LOW);
+}
+
 void approach_block(int direction){
   // Has been simplified for testing
 
-    forward(600);
+    Serial.println("Approaching pick up");
+    forward(speed);
+    delay(500);
+    Serial.println("Moved forward");
 
     if (direction == 1){
+      Serial.println("Turn right into pick up");
         turnRight();
         delay(500);
         readLine();
@@ -16,6 +34,7 @@ void approach_block(int direction){
         }
     }
     else if (direction == 2){
+      Serial.println("Turn left into pick up");
         turnLeft();
         delay(500);
         readLine();
@@ -25,9 +44,9 @@ void approach_block(int direction){
         }
     }
     else {
-        Serial.println("Error, no turn indicated")
+        Serial.println("Not turning");
         forward(speed);
-        delay(500);
+        delay(250);
     }
 
     startLine = millis();
@@ -38,7 +57,6 @@ void approach_block(int direction){
     }
 
     stop();
-    delay(2000);
     
     /*
     // initialise a block range, this can be moved into a header file later
@@ -83,8 +101,12 @@ bool colour_detect(){
 void leave(bool colour_present=true){
   // Red colour detected by default, for testing
     int station; // it may be useful for this to become a global variable later
+    Serial.print("Currently in station");
+    Serial.println(station);
 
     // decide if we're at station ABCD -> 0123
+    Serial.print("routeCounter as read in leave function:");
+    Serial.println(routeCounter);
     if (routeCounter < 6){
         station = 0;
     }
@@ -98,6 +120,9 @@ void leave(bool colour_present=true){
         station = 3;
     }
 
+    delay(5000);
+    turnOffLED();
+
    readLine();
    while(lineStates[0] == 0 && lineStates[3] == 0){
     backward(speed);
@@ -110,11 +135,13 @@ void leave(bool colour_present=true){
     // turn 90 degrees clockwise for (A+B).R + G.(!A)
     if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
-        arcTurnRight();
+        Serial.println("After picking up a block, I am turning right");
+        turn(1);
     }
     else{
         //turn 90 degrees anticlockwise
-        arcTurnLeft();
+        Serial.println("After picking up a block, I am turning left");
+        turn(2);
     }
 
     if (!colour_present) {
@@ -125,16 +152,8 @@ void leave(bool colour_present=true){
     }
 }
 
-void tellColour(int colour_present){
-    if(!colour_present){
-        digitalWrite(green, HIGH);
+void checkRoute(bool colour_present){
+    if (!colour_present){
+        routeCounter += 1;
     }
-    else if (colour_present){
-        digitalWrite(red, HIGH);
-    }
-}
-
-void turnOffLED(){
-    digitalWrite(red, LOW);
-    digitalWrite(green, LOW);
 }

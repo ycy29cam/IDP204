@@ -9,6 +9,10 @@ int LOut = 2, LIn = 3, RIn = 4, ROut = 5;
 int lineStates[4];
 // Declare a list to store the 4 states of 4 separate line sensors
 
+int blue = 6; // Blue LED
+int red = 7; // Red LED
+int green = 8; // Green LED
+
 int speed = 200;
 // Declare the default speed of the motors
 int nintyDegrees = 700;
@@ -21,6 +25,17 @@ int head = 0;
 // Declare a variable to store the position in the weight arrays for the next recording
 int arraySize = 0;
 // Declare a variable to store the length of the weight arrays
+
+long blink_time = millis();
+int blinkState = 0;
+
+void blinkLED(long current_time){
+  if ((current_time - blink_time) > 500){
+    blinkState = blinkState == 0 ? 1 : 0;
+    blink_time = current_time;
+  }
+  digitalWrite(blue, blinkState);
+}
 
 void forward(int speed){
   // Rotate both motors forward at the given speed
