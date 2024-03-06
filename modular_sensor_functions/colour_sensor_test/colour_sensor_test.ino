@@ -1,4 +1,4 @@
-int colour_sensor = 8;
+int colour_sensor = 11;
 
 void setup() {
   Serial.begin(9600);
