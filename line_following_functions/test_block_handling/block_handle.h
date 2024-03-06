@@ -113,34 +113,34 @@ void leave(bool colour_present){
 }
 **/
 
-void grab_block(int n){                       //Function to contract the grabber arms
-  myservo.attach(9);
+void rotate_arms_to(int n){                       //Function to contract the grabber arms
+  myservo.attach(9);                          //90 is the down positions and 150 is the up position for the grabber arms
   myservo.write(n);
   delay(15);                         
 }
 
-void lower_block(){                           // Function to lower the block grabbing arms from a raised position
-  int pos = 0;                               
-  myservo.attach(9);                         
-  for (pos = 0; pos <= 90; pos += 1) {        
-    myservo.write(pos);                       
-    delay(15);                                 
-  }
-}
-void raise_block(){                           // Function to raise the block grabbing arms from a lowered position
-  int pos = 93;                               
-  myservo.attach(9);                         
-  for (pos = 93; pos >= 30; pos -= 1) {       
-    myservo.write(pos);                       
-    delay(15);                                 
-  }
+void lift_arms(){                           //Function to lift arms to raised position
+  rotate_arms_to(150);
+  delay(1000);
 }
 
-void 
-
-void set_block_position(){
-
+void lower_arms(){                          //Function to lower arms to bottom position
+  rotate_arms_to(90);
+  delay(1000);
 }
+
+void close_arms(){                        //Function to close grabber arms from open position
+  rotate_arms_to(60);
+  delay(1000);
+}
+
+void open_arms(){                         //Function to open grabber arms from closed position
+  rotate_arms_to(110);
+  delay(1000);
+}
+
+//void set_block_position(){
+
 
 /**void tellColour(int colour_present){      //Function to detect colour of block
     if(!colour_present){
