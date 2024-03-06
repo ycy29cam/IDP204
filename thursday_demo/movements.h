@@ -9,15 +9,10 @@ int LOut = 2, LIn = 3, RIn = 4, ROut = 5;
 int lineStates[4];
 // Declare a list to store the 4 states of 4 separate line sensors
 
-int blue = 6; // Blue LED
-int red = 7; // Red LED
-int green = 8; // Green LED
-
 int speed = 200;
 // Declare the default speed of the motors
 int nintyDegrees = 700;
 // Declare the time required for the robot to turn ninty degrees using the turnLeft or turnRight functions
-int routeCounter = 0;
 
 int leftWeightArray[10] = {0};
 int rightWeightArray[10] = {0};
@@ -26,6 +21,12 @@ int head = 0;
 // Declare a variable to store the position in the weight arrays for the next recording
 int arraySize = 0;
 // Declare a variable to store the length of the weight arrays
+
+int blue = 6; // Blue LED
+int red = 7; // Red LED
+int green = 8; // Green LED
+
+int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
 
 long blink_time = millis();
 int blinkState = 0;
@@ -109,6 +110,13 @@ void arcTurnLeft(){
   right->run(BACKWARD);
 }
 
+void stop(){
+  left->setSpeed(0);
+  right->setSpeed(0);
+  left->run(RELEASE);
+  right->run(RELEASE);
+}
+
 void turn(int direction){
   // Combined turning functions, with delays and line detection
   // 1 indicates a right turn and 2 indicates a left turn
@@ -138,15 +146,9 @@ void turn(int direction){
   }
 }
 
-void stop(){
-  left->setSpeed(0);
-  right->setSpeed(0);
-  left->run(RELEASE);
-  right->run(RELEASE);
-}
-
 void follow(int speed_1, int speed_2){
   // Rotate both motors forward at the given speed
+  blinkLED(millis());
   left->setSpeed(speed_1);
   right->setSpeed(speed_2);
   left->run(BACKWARD);
@@ -181,10 +183,12 @@ void adjust(int lineStates[4]){
   }
   else if (lineStates[1] == 0 && lineStates[2] == 1){
     follow(speed, speed - rightWeight);
+    //follow(speed - rightWeight, speed);
     //turnRight();
   }
   else if (lineStates[1] == 1 && lineStates[2] == 0){
     follow(speed - leftWeight, speed);
+    //follow(speed, speed - rightWeight);
     //turnLeft();
   }
   else{
@@ -195,7 +199,7 @@ void adjust(int lineStates[4]){
 
 void drive_route(int* journey, int number_of_junctions) {
    
-    int journey_count = 0;  
+    int journey_count = 0; 
     while (journey_count < number_of_junctions) {
 
         // Move forward consistently
@@ -208,28 +212,23 @@ void drive_route(int* journey, int number_of_junctions) {
         stop();
         delay(250);
 
+
+      Serial.print(journey_count);
+      Serial.println(journey[journey_count]);
         if (journey[journey_count] == 0) {
                 // robot will continue to move forwards
-            Serial.println("Going straight");
+            Serial.println("I should move forward");
             forward(speed);
             delay(600);
         }
         else if (journey[journey_count] == 1) { 
-            Serial.println("Turning right");
+            Serial.println("I should turn right");
             turn(1);
         }
         else if (journey[journey_count] == 2) {
-          Serial.println("Turning left");
+          Serial.println("I should turn left");
             turn(2);
         }
-        /*
-        else if (journey[journey_count] == 3) {
-            ArcTurnRight();
-        }
-        else if (journey[journey_count] == 4) {
-            ArcTurnLeft();
-        }
-        */
 
         stop();
         delay(250);

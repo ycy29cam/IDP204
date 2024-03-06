@@ -4,7 +4,6 @@
 #include "block_handle.h"
 
 int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
-int blue = 6; // Blue LED
 int red = 7; // Red LED
 int green = 8; // Green LED
 int button = 13; // Button
@@ -19,7 +18,6 @@ void setup() {
   pinMode(ROut, INPUT);
   pinMode(InfraredSensorPin,INPUT);
   pinMode(button, INPUT);
-  pinMode(blue, OUTPUT);
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
   // Declare all inputs and outputs
@@ -45,11 +43,10 @@ void loop() {
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     // Drive the robot according to the route, to a pick up point, from either the start or the drop off points
 
-
     if (routeCounter >= 4){checkRoute(colour_present); }
-    // approach the block and pick it up
-    approach_block(final_turns[routeCounter]); // Direction to be specified
-
+// approach the block and pick it up
+    approach_block(block_direction); // Direction to be specified
+    
     // detect the block's color
     // black block returns false, red block returns true
     bool colour_present = colour_detect();
@@ -65,3 +62,4 @@ void loop() {
   }
 }
 // Not done Not done Not done
+

@@ -1,41 +1,50 @@
-//Include all libraries necessary for operation of code
 #include "Arduino.h"
 #include "Wire.h"
-//#include "DFRobot_VL53L0X.h"
-// #include "block_handle.h"
-#include <Servo.h>          
+#include "DFRobot_VL53L0X.h"
+DFRobot_VL53L0X sensor;
 #include <Adafruit_MotorShield.h>
+#include <Servo.h>
+#include "movements.h"
 
-Servo myservo1;              // create servo object to control a servo
+Servo myservo1;            
 Servo myservo2;
 
-
-//DFRobot_VL53L0X sensor;
+int button = 13; // Button
+int routeNumber = 17; // Total number of routes
+int colour_sensor = 11;
 
 void setup() {
-  //initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
 
-  /**pinMode(LOut, INPUT);
+  // Set up the time of flight distance sensor
+  Wire.begin();
+  sensor.begin(0x50);
+  sensor.setMode(sensor.eContinuous,sensor.eHigh);
+  sensor.start();
+
+  pinMode(LOut, INPUT);
   pinMode(LIn, INPUT);
   pinMode(RIn, INPUT);
   pinMode(ROut, INPUT);
-  pinMode(InfraredSensorPin,INPUT);
+  pinMode(colour_sensor,INPUT);
   pinMode(button, INPUT);
+  pinMode(blue, OUTPUT);
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
+  // Declare all inputs and outputs
 
-   //Magical code (but why?)
+  myservo1.attach(9);      // Servo input at pin 9
+  myservo2.attach(10);     // Servo input at pin 10
+
+  myservo1.write(110);     // Define initial position
+  myservo2.write(65);      // Define initial position
+
+  // Magical code (but why?)
   // https://forum.arduino.cc/t/my-void-setup-is-repeating/669468/7 (potential reason?)
   if (!AFMS.begin()) {
     Serial.println("Could not find Motor Shield. Check wiring.");
-    while (1);**/
-    myservo1.attach(9);      // Servo input at pin 9
-    myservo2.attach(10);
-
-    myservo1.write(110);
-    myservo2.write(65);
-
+    while (1);
+  }
 }
 
 void rotate_arms_to_1(int n){                    //Function to contract the grabber arms
@@ -76,61 +85,35 @@ void open_arms(){                         //Function to open grabber arms from c
       delay(1000);
 }
 
- 
-
-  /**join i2c bus (address optional for master)
-  Wire.begin();
-  //Set I2C sub-device address
-  sensor.begin(0x50);
-  //Set to Back-to-back mode and high precision mode
-  sensor.setMode(sensor.eContinuous,sensor.eHigh);
-  //Laser rangefinder begins to work
-  sensor.start();
-}**/
-
-//int run_once = 0; 
-
 void loop() {
-/**  while(digitalRead(button) == 0){
-    // Wait for the start button to the pressed
-    delay(100);
-  }**/
-
-  /**if (run_once == 0){
-        //raise_block();
-        //grab_block();
-        int ang = myservo.read();
-        Serial.println(ang);
-        run_once++; **/
- /** if (Serial.read() != 0){
-    angle = Serial.read();
+  while(sensor.getDistance() > 100){
+    Serial.print("Distance is: ");
+    Serial.println(sensor.getDistance());
+    forward(speed);
   }
-  else{
-    angle = angle;
-  }
-  myservo.write(angle);**/
-
-  open_arms();
-  delay(1000);
-
-  lower_arms();
-  delay(1000);
+  stop();
 
   close_arms();
-  delay(1000);
-
   lift_arms();
-  delay(1000);
-  
-  delay(1000000000);
+
+  if (digitalRead(colour_sensor)){
+    Serial.println("It's red");
+    digitalWrite(red, HIGH);
+  }
+  else {
+    Serial.println("It's black");
+    digitalWrite(green, HIGH);
+  }
+
+  delay(5000);
+
+  lower_arms();
+  open_arms();
+
+  digitalWrite(green, LOW);
+  digitalWrite(red, LOW);
+
+  delay(3000);
 
 }
-  
-  /** //Get the distance
- Serial.print("Distance: ");Serial.println(sensor.getDistance());
- //The delay is added to demonstrate the effect, and if you do not add the delay,
- //it will not affect the measurement accuracy
- delay
-}**/
-
-
+// Not done Not done Not done
