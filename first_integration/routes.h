@@ -9,6 +9,8 @@
 // N.B. 3 and 4 represent arc turns if the corners are treated as junctions
 // if they are just line followed then all 3s and 4s can be removed
 
+int routeCounter = 0;
+
 void checkRoute(int colour_present){
     if (!colour_present){
         routeCounter += 1;
@@ -18,7 +20,7 @@ void checkRoute(int colour_present){
 int SA[2] = {0,2};
 int AG[1] = {2};
 int AR[2] = {0,1};
-int GB[2] = {0,1,2};
+int GB[3] = {0,1,2};
 int RB[4] = {0,0,0,2};
 int BG[2] = {2,0};
 int BR[3] = {1,3,0};

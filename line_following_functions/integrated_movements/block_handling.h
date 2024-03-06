@@ -1,10 +1,14 @@
 int InfraredSensorPin = 8;
 long startLine;
+int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
 
 void approach_block(int direction){
   // Has been simplified for testing
 
-    forward(600);
+    Serial.println("Approaching pick up");
+    forward(speed);
+    delay(500);
+    Serial.println("Moved forward");
 
     if (direction == 1){
         turnRight();
@@ -25,7 +29,7 @@ void approach_block(int direction){
         }
     }
     else {
-        Serial.println("Error, no turn indicated")
+        Serial.println("Error, no turn indicated");
         forward(speed);
         delay(500);
     }
@@ -83,8 +87,12 @@ bool colour_detect(){
 void leave(bool colour_present=true){
   // Red colour detected by default, for testing
     int station; // it may be useful for this to become a global variable later
+    Serial.print("Currently in station");
+    Serial.println(station);
 
     // decide if we're at station ABCD -> 0123
+    Serial.print("routeCounter as read in leave function:");
+    Serial.println(routeCounter);
     if (routeCounter < 6){
         station = 0;
     }
@@ -110,11 +118,13 @@ void leave(bool colour_present=true){
     // turn 90 degrees clockwise for (A+B).R + G.(!A)
     if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
-        arcTurnRight();
+        Serial.println("After picking up a block, I am turning right");
+        turn(1);
     }
     else{
         //turn 90 degrees anticlockwise
-        arcTurnLeft();
+        Serial.println("After picking up a block, I am turning left");
+        turn(2);
     }
 
     if (!colour_present) {
@@ -125,6 +135,7 @@ void leave(bool colour_present=true){
     }
 }
 
+/*
 void tellColour(int colour_present){
     if(!colour_present){
         digitalWrite(green, HIGH);
@@ -133,8 +144,17 @@ void tellColour(int colour_present){
         digitalWrite(red, HIGH);
     }
 }
+*/
 
+/*
 void turnOffLED(){
     digitalWrite(red, LOW);
     digitalWrite(green, LOW);
+}
+*/
+
+void checkRoute(bool colour_present){
+    if (!colour_present){
+        routeCounter += 1;
+    }
 }
