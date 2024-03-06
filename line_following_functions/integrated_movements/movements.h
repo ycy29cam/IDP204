@@ -22,6 +22,23 @@ int head = 0;
 int arraySize = 0;
 // Declare a variable to store the length of the weight arrays
 
+int blue = 6; // Blue LED
+int red = 7; // Red LED
+int green = 8; // Green LED
+
+int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
+
+long blink_time = millis();
+int blinkState = 0;
+
+void blinkLED(long current_time){
+  if ((current_time - blink_time) > 500){
+    blinkState = blinkState == 0 ? 1 : 0;
+    blink_time = current_time;
+  }
+  digitalWrite(blue, blinkState);
+}
+
 void readLine(){
   lineStates[0] = digitalRead(LOut);
   lineStates[1] = digitalRead(LIn);
@@ -31,6 +48,7 @@ void readLine(){
 
 void forward(int speed){
   // Rotate both motors forward at the given speed
+  blinkLED(millis());
   left->setSpeed(speed);
   right->setSpeed(speed);
   left->run(BACKWARD);
@@ -39,6 +57,7 @@ void forward(int speed){
 
 void backward(int speed){
   // Rotate both motors backward at the given speed
+  blinkLED(millis());
   left->setSpeed(speed);
   right->setSpeed(speed);
   left->run(FORWARD);
@@ -48,6 +67,7 @@ void backward(int speed){
 void turnLeft(){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
   // This is used for sharp turns, ie. approaching the block
+  blinkLED(millis());
   left->setSpeed(125);
   right->setSpeed(200);
   left->run(FORWARD);
@@ -58,6 +78,7 @@ void turnLeft(){
 void turnRight(){
   // Rotate the robot to the left, for a given duration (which determines the angle rotated)
   // This is used for sharp turns, ie. approaching the block
+  blinkLED(millis());
   left->setSpeed(200);
   right->setSpeed(125);
   left->run(BACKWARD);
@@ -73,14 +94,16 @@ void arcTurnRight(){
   left->run(BACKWARD);
   right->run(FORWARD);
   */
+  blinkLED(millis());
   left->setSpeed(200);
-  right->setSpeed(40);
+  right->setSpeed(60); // Not symmetric
   left->run(BACKWARD);
   right->run(FORWARD);
 }
 
 void arcTurnLeft(){
   // This is used for gentle turns (cutting the corners), ie. ordinary junctions
+  blinkLED(millis());
   left->setSpeed(80);
   right->setSpeed(200);
   left->run(FORWARD);
@@ -98,21 +121,25 @@ void turn(int direction){
   // Combined turning functions, with delays and line detection
   // 1 indicates a right turn and 2 indicates a left turn
   if (direction == 1){
+    blinkLED(millis());
     arcTurnRight();
     delay(1200);
 
     readLine();
     while(lineStates[1] == 0){
+    blinkLED(millis());
     arcTurnRight();
     readLine();
     }
   }
   else if (direction == 2){
+    blinkLED(millis());
     arcTurnLeft();
     delay(1200);
 
     readLine();
     while(lineStates[2] == 0){
+    blinkLED(millis());
     arcTurnLeft();
     readLine();
     }
@@ -121,6 +148,7 @@ void turn(int direction){
 
 void follow(int speed_1, int speed_2){
   // Rotate both motors forward at the given speed
+  blinkLED(millis());
   left->setSpeed(speed_1);
   right->setSpeed(speed_2);
   left->run(BACKWARD);

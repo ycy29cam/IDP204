@@ -1,6 +1,19 @@
 int InfraredSensorPin = 8;
 long startLine;
-int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
+
+void tellColour(int colour_present){
+    if(!colour_present){
+        digitalWrite(green, HIGH);
+    }
+    else if (colour_present){
+        digitalWrite(red, HIGH);
+    }
+}
+
+void turnOffLED(){
+    digitalWrite(red, LOW);
+    digitalWrite(green, LOW);
+}
 
 void approach_block(int direction){
   // Has been simplified for testing
@@ -11,6 +24,7 @@ void approach_block(int direction){
     Serial.println("Moved forward");
 
     if (direction == 1){
+      Serial.println("Turn right into pick up");
         turnRight();
         delay(500);
         readLine();
@@ -20,6 +34,7 @@ void approach_block(int direction){
         }
     }
     else if (direction == 2){
+      Serial.println("Turn left into pick up");
         turnLeft();
         delay(500);
         readLine();
@@ -29,9 +44,9 @@ void approach_block(int direction){
         }
     }
     else {
-        Serial.println("Error, no turn indicated");
+        Serial.println("Not turning");
         forward(speed);
-        delay(500);
+        delay(250);
     }
 
     startLine = millis();
@@ -42,7 +57,6 @@ void approach_block(int direction){
     }
 
     stop();
-    delay(2000);
     
     /*
     // initialise a block range, this can be moved into a header file later
@@ -106,6 +120,9 @@ void leave(bool colour_present=true){
         station = 3;
     }
 
+    delay(5000);
+    turnOffLED();
+
    readLine();
    while(lineStates[0] == 0 && lineStates[3] == 0){
     backward(speed);
@@ -134,24 +151,6 @@ void leave(bool colour_present=true){
         routeCounter += 2;
     }
 }
-
-/*
-void tellColour(int colour_present){
-    if(!colour_present){
-        digitalWrite(green, HIGH);
-    }
-    else if (colour_present){
-        digitalWrite(red, HIGH);
-    }
-}
-*/
-
-/*
-void turnOffLED(){
-    digitalWrite(red, LOW);
-    digitalWrite(green, LOW);
-}
-*/
 
 void checkRoute(bool colour_present){
     if (!colour_present){

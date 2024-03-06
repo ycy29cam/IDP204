@@ -3,8 +3,6 @@
 #include "routes.h"
 #include "block_handling.h"
 
-int red = 7; // Red LED
-int green = 8; // Green LED
 int button = 13; // Button
 int routeNumber = 17; // Total number of routes
 
@@ -16,6 +14,10 @@ void setup() {
   pinMode(LIn, INPUT);
   pinMode(RIn, INPUT);
   pinMode(ROut, INPUT);
+
+  pinMode(blue, OUTPUT);
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
 
   // Magical code (but why?)
   // https://forum.arduino.cc/t/my-void-setup-is-repeating/669468/7 (potential reason?)
@@ -37,17 +39,15 @@ void loop() {
     Serial.println(route_lengths[routeCounter]);
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
 
-    int pickup_turn = routes[routeCounter][route_lengths[routeCounter] - 1];
-
     if (routeCounter >= 4){checkRoute(true); }
     // approach the block and pick it up
-    approach_block(1); // Direction to be specified
+    approach_block(final_turns[routeCounter]); // Direction to be specified
 
     // detect the block's color
     // black block returns false, red block returns true
     // bool colour_present = colour_detect();
 
-    // tellColour(colour_present); // Light up the corresponding LED
+    tellColour(true); // Light up the corresponding LED, currently set to RED
 
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
     // adjust route depending on the platform required
