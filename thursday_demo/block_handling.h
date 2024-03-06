@@ -27,7 +27,7 @@ void approach_block(int direction){
     if (direction == 1){
       Serial.println("Turn right into pick up");
         turnRight();
-        delay(500);
+        delay(800);
         readLine();
         while(lineStates[1] == 0){
             turnRight();
@@ -37,7 +37,7 @@ void approach_block(int direction){
     else if (direction == 2){
       Serial.println("Turn left into pick up");
         turnLeft();
-        delay(500);
+        delay(800);
         readLine();
         while(lineStates[2] == 0){
             turnLeft();
