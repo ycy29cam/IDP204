@@ -6,7 +6,8 @@
 #include <Servo.h>          
 #include <Adafruit_MotorShield.h>
 
-int angle = 19;
+Servo myservo1;              // create servo object to control a servo
+Servo myservo2;
 
 
 //DFRobot_VL53L0X sensor;
@@ -29,8 +30,51 @@ void setup() {
   if (!AFMS.begin()) {
     Serial.println("Could not find Motor Shield. Check wiring.");
     while (1);**/
-    myservo.attach(9);      // Servo input at pin 9
-  }
+    myservo1.attach(9);      // Servo input at pin 9
+    myservo2.attach(10);
+
+    myservo1.write(110);
+    myservo2.write(65);
+
+}
+
+void rotate_arms_to_1(int n){                    //Function to contract the grabber arms
+      myservo1.write(n);                             //60 is closed and 110 is open position for the grabber
+      delay(15);                         
+}
+
+void rotate_arms_to_2(int n){                    //Function to contract the grabber arms   
+      myservo2.write(n);                         //18 is the down positions and 65 is the up position for the grabber arms                       
+      delay(15);                         
+}
+
+void lift_arms(){                           //Function to lift arms to raised position
+  int pos = 18;  
+  for (pos = 18; pos <= 65; pos += 1) {    
+    rotate_arms_to_2(pos);
+    delay(50); 
+ }
+  delay(1000);
+}
+
+void lower_arms(){                          //Function to lower arms to bottom position
+  int pos = 65;  
+  for (pos = 65; pos >= 18; pos -= 1) { 
+    rotate_arms_to_2(pos);
+    delay(50); 
+ }
+  delay(1000);
+}
+
+void close_arms(){                        //Function to close grabber arms from open position
+      rotate_arms_to_1(60);                       
+      delay(1000);
+}
+
+void open_arms(){                         //Function to open grabber arms from closed position
+      rotate_arms_to_1(110);
+      delay(1000);
+}
 
  
 
@@ -65,9 +109,17 @@ void loop() {
     angle = angle;
   }
   myservo.write(angle);**/
-  int ang = myservo.read();
-  Serial.println(ang);
-  delay(300);
+  open_arms();
+  delay(1000);
+
+  lower_arms();
+  delay(1000);
+
+  close_arms();
+  delay(1000);
+
+  lift_arms();
+  delay(1000);
 
 }
   
@@ -77,6 +129,5 @@ void loop() {
  //it will not affect the measurement accuracy
  delay
 }**/
-
 
 
