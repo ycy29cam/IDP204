@@ -10,17 +10,30 @@ int button = 13; // Button
 int routeNumber = 17; // Total number of routes
 
 void setup() {
-  Serial.being(9600);
+  Serial.begin(9600);
+
+  // Set up the time of flight distance sensor
+  Wire.begin();
+  sensor.begin(0x50);
+  sensor.setMode(sensor.eContinuous,sensor.eHigh);
+  sensor.start();
 
   pinMode(LOut, INPUT);
   pinMode(LIn, INPUT);
   pinMode(RIn, INPUT);
   pinMode(ROut, INPUT);
-  pinMode(InfraredSensorPin,INPUT);
+  pinMode(colour_sensor,INPUT);
   pinMode(button, INPUT);
+  pinMode(blue, OUTPUT);
   pinMode(red, OUTPUT);
   pinMode(green, OUTPUT);
   // Declare all inputs and outputs
+
+  myservo1.attach(9);      // Servo input at pin 9
+  myservo2.attach(10);     // Servo input at pin 10
+
+  myservo1.write(110);     // Define initial position
+  myservo2.write(65);      // Define initial position
 
   // Magical code (but why?)
   // https://forum.arduino.cc/t/my-void-setup-is-repeating/669468/7 (potential reason?)
@@ -31,10 +44,12 @@ void setup() {
 }
 
 void loop() {
+  /*
   while(digitalRead(button) == 0){
     // Wait for the start button to the pressed
     delay(100);
   }
+  */
 
   Serial.print("Begin");
 
@@ -43,22 +58,32 @@ void loop() {
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     // Drive the robot according to the route, to a pick up point, from either the start or the drop off points
 
-    if (routeCounter >= 4){checkRoute(colour_present); }
+    readLine();
+    while (lineStates[0] == 0 && lineStates[3] == 0){
+      adjust(lineStates);
+      readLine();
+    }
+
+    stop();
+    delay(250);
+
 // approach the block and pick it up
-    approach_block(block_direction); // Direction to be specified
+    approach_block(final_turns[routeCounter]); // Direction to be specified
+
+    if (routeCounter >= 4){checkRoute(colour_present); }
     
     // detect the block's color
     // black block returns false, red block returns true
     bool colour_present = colour_detect();
 
-    tellColour(colour_present); // Light up the corresponding LED
-
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
     // adjust route depending on the platform required
-    leave(route_counter, colour_present); // Increment routeCounter by 1 if black, 2 if red
+    leave(colour_present); // Increment routeCounter by 1 if black, 2 if red
 
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     dropOffBlock(); // Increment routeCounter by 2 (drop off point to the next pick up point)
+
+    routeCounter += 2;
   }
 }
 // Not done Not done Not done

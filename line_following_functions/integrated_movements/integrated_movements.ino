@@ -4,17 +4,6 @@
 #include "block_handling.h"
 #include <Servo.h>  
 
-
-
-Servo myservo1;              // create servo object to control a servo
-Servo myservo2;
-
-
-
-
-
-
-
 int button = 13; // Button
 int routeNumber = 17; // Total number of routes
 

@@ -3,6 +3,9 @@ Servo myservo2;
 int colour_sensor = 11;
 bool colour_present;
 
+Servo myservo1;              // create servo object to control a servo
+Servo myservo2;
+
 // Definition of grabber functions
 void rotate_arms_to_1(int n){                    //Function to contract the grabber arms
       myservo1.write(n);                             //60 is closed and 110 is open position for the grabber
@@ -138,6 +141,10 @@ void leave(bool colour_present){
         station = 3;
     }
 
+    tellColour(colour_present); // Light up the corresponding LED
+    delay(5000);
+    turnOffLED();
+
    readLine();
    while(lineStates[0] == 0 && lineStates[3] == 0){
     backward(speed);
@@ -163,6 +170,15 @@ void leave(bool colour_present){
 }
 
 void dropOffBlock(bool colour_present){
+
+    readLine();
+    while(lineStates[0] == 0 && lineStates[3] == 0){
+        adjust{lineStates};
+        readLine();
+    }
+
+    stop();
+
     lower_arms();
     open_arms();
     delay(500);
@@ -190,6 +206,8 @@ void dropOffBlock(bool colour_present){
             readLine();
         }
     }
+
+    stop();
     delay(250);
 
 }
