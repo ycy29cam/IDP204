@@ -1,59 +1,15 @@
-Servo myservo1;              // create servo object to control a servo
-Servo myservo2;
-int colour_sensor = 11;
-bool colour_present;
+#include <Servo.h>          // Need to include this at the top of the file
+Servo myservo;              // create servo object to control a servo
 
-// Definition of grabber functions
-void rotate_arms_to_1(int n){                    //Function to contract the grabber arms
-      myservo1.write(n);                             //60 is closed and 110 is open position for the grabber
-      delay(15);                         
-}
-
-void rotate_arms_to_2(int n){                    //Function to contract the grabber arms   
-      myservo2.write(n);                         //18 is the down positions and 65 is the up position for the grabber arms                       
-      delay(15);                         
-}
-
-void lift_arms(){                           //Function to lift arms to raised position
-  int pos = 18;  
-  for (pos = 18; pos <= 65; pos += 1) {    
-    rotate_arms_to_2(pos);
-    delay(50); 
- }
-  delay(1000);
-}
-
-void lower_arms(){                          //Function to lower arms to bottom position
-  int pos = 65;  
-  for (pos = 65; pos >= 18; pos -= 1) { 
-    rotate_arms_to_2(pos);
-    delay(50); 
- }
-  delay(1000);
-}
-
-void close_arms(){                        //Function to close grabber arms from open position
-      rotate_arms_to_1(60);                       
-      delay(1000);
-}
-
-void open_arms(){                         //Function to open grabber arms from closed position
-      rotate_arms_to_1(110);
-      delay(1000);
-}
-
-// End of grabber function definition
-
+int InfraredSensorPin = 8;
 
 void approach_block(int direction){
 
-    forward(speed);
-    delay(600);
+    forward(600);
 
     if (direction == 1){
-      Serial.println("Turning right into pick up");
         turnRight();
-        delay(1200);
+        delay(500);
         readLine();
         while(lineStates[1] == 0){
             turnRight();
@@ -61,9 +17,8 @@ void approach_block(int direction){
         }
     }
     else if (direction == 2){
-      Serial.println("Turning left into pick up");
         turnLeft();
-        delay(1200);
+        delay(500);
         readLine();
         while(lineStates[2] == 0){
             turnLeft();
@@ -71,52 +26,45 @@ void approach_block(int direction){
         }
     }
     else {
+        Serial.println("Error, no turn indicated")
         forward(speed);
-        delay(250);
+        delay(500);
     }
-
-    stop();
-    Serial.println("Pick up");
     
     // initialise a block range, this can be moved into a header file later
-    int BLOCK_RANGE = 100;
+    int BLOCK_RANGE = 500;
 
     // lower grabber arm
     // CURRENTLY NOT PROGRAMMED
-    lower_arms(); // Not needed if the grabber is down by default, after a drop off
-    open_arms();
+    lower_grabber(); // Not needed if the grabber is down by default, after a drop off
 
     // initialize block distance
+    Adafruit_VL53L0X block_distance = Adafruit_VL53L0X();
+
+    // begin ranging
+    block_distance.begin()
+    block_distance.startRangeContinuous();
     
     // advance towards block until in grabbing range
-
-    Serial.print("Distance is: ");
-    Serial.println(sensor.getDistance());
-    readLine();
-    while (sensor.getDistance() > BLOCK_RANGE){
-        Serial.print("Distance is: ");
-        Serial.println(sensor.getDistance());
-        adjust(lineStates);
+    while (block_distance.readRange() < BLOCK_RANGE){
         readLine();
+        adjust(linestates);
+        delay(10); //Probably don't need this
     }
-
-    stop();
     
     // use picking up block routine (this should include raising the grabber, but not lowering it)
     // CURRENTLY NOT PROGRAMMED
-    close_arms();
-    lift_arms();
+    grab_block();
 }
 
 // colour detection function
 bool colour_detect(){
+
     // red returns true, black returns false
-    if (digitalRead(colour_sensor)){
-        Serial.println("Colour is red");
+    if (digitalRead(InfraredSensorPin)){
         return true;
     }
     else{
-        Serial.println("Colour is black");
         return false;
     }
 }
@@ -162,36 +110,34 @@ void leave(bool colour_present){
     }
 }
 
-void dropOffBlock(bool colour_present){
-    lower_arms();
-    open_arms();
-    delay(500);
-    lift_arms();
-    close_arms();
+////////////////////////////////////////////////////
+/** FUNCTIONS TO CONTROL THE GRABBER ARMS **/
+////////////////////////////////////////////////////
 
-    backward(speed);
-    delay(300);
+void rotate_arms_to(int n){                       //Function to contract the grabber arms
+  myservo.attach(9);                          //90 is the down positions and 150 is the up position for the grabber arms
+  myservo.write(n);
+  delay(15);                         
+}
 
-    if (colour_present){
-        turnRight();
-        delay(300);
-        readLine();
-        while (lineStates[1] == 0){
-            turnRight();
-            readLine();
-        }
-    }
-    else {
-        turnLeft();
-        delay(300);
-        readLine();
-        while (lineStates[2] == 0){
-            turnLeft();
-            readLine();
-        }
-    }
-    delay(250);
+void lift_arms(){                           //Function to lift arms to raised position
+  rotate_arms_to(150);
+  delay(1000);
+}
 
+void lower_arms(){                          //Function to lower arms to bottom position
+  rotate_arms_to(90);
+  delay(1000);
+}
+
+void close_arms(){                        //Function to close grabber arms from open position
+  rotate_arms_to(60);
+  delay(1000);
+}
+
+void open_arms(){                         //Function to open grabber arms from closed position
+  rotate_arms_to(110);
+  delay(1000);
 }
 
 void tellColour(int colour_present){

@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "Wire.h"
 //#include "DFRobot_VL53L0X.h"
-// #include "block_handle.h"
+#include "block_handle.h"
 #include <Servo.h>          
 #include <Adafruit_MotorShield.h>
 
@@ -44,24 +44,24 @@ void rotate_arms_to_1(int n){                    //Function to contract the grab
 }
 
 void rotate_arms_to_2(int n){                    //Function to contract the grabber arms   
-      myservo2.write(n);                         //23 is the down positions and 65 is the up position for the grabber arms                       
+      myservo2.write(n);                         //18 is the down positions and 65 is the up position for the grabber arms                       
       delay(15);                         
 }
 
 void lift_arms(){                           //Function to lift arms to raised position
-  int pos = 27;  
-  for (pos = 27; pos <= 65; pos += 1) {    
+  int pos = 18;  
+  for (pos = 18; pos <= 65; pos += 1) {    
     rotate_arms_to_2(pos);
-    delay(30); 
+    delay(50); 
  }
   delay(1000);
 }
 
 void lower_arms(){                          //Function to lower arms to bottom position
   int pos = 65;  
-  for (pos = 65; pos >= 27; pos -= 1) { 
+  for (pos = 65; pos >= 18; pos -= 1) { 
     rotate_arms_to_2(pos);
-    delay(30); 
+    delay(50); 
  }
   delay(1000);
 }
@@ -109,7 +109,6 @@ void loop() {
     angle = angle;
   }
   myservo.write(angle);**/
-
   open_arms();
   delay(1000);
 
@@ -121,8 +120,6 @@ void loop() {
 
   lift_arms();
   delay(1000);
-  
-  delay(1000000000);
 
 }
   

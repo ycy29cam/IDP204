@@ -1,7 +1,6 @@
 int InfraredSensorPin = 8;
 long startLine;
 
-
 void tellColour(int colour_present){
     if(!colour_present){
         digitalWrite(green, HIGH);

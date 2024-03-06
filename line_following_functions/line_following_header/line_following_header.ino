@@ -85,8 +85,8 @@ void start_to_A(){
 
 void loop(){
   // Test level 1: whether the robot stays on the marked white line, carry out adjustments and calibrations so the adjust() function keeps the robot on the line
-  //readLine();
-  //adjust(lineStates);
+  readLine();
+  adjust(lineStates);
 
   //Test level 2: whether the robot stays on the line and stop when a turn is detected
   /*
