@@ -165,6 +165,7 @@ void leave(bool colour_present){
     else if (routeCounter < 18){
         station = 3;
     }
+    // Stations redefined, since the total number of routes is 17, instead of 21
 
     tellColour(colour_present); // Light up the corresponding LED
     delay(5000);
@@ -220,6 +221,7 @@ void leave(bool colour_present){
     else if (station == 3 && !colour_present){
       turn(1);
     }
+    // Hard-coding the boolean algebra since the rounded corners are ignored, sorry Olly
 
     if (!colour_present) {
         routeCounter += 1;

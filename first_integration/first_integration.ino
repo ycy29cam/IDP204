@@ -62,7 +62,7 @@ void loop() {
 
     if (routeCounter > 14){
       stop();
-      Serial.println("Exercise ended");
+      Serial.println("Exercise ended"); // Might or might not work
     }
 
     readLine();
