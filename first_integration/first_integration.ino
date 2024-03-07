@@ -1,11 +1,13 @@
+#include "Arduino.h"
+#include "Wire.h"
+#include "DFRobot_VL53L0X.h"
+DFRobot_VL53L0X sensor;
 #include <Adafruit_MotorShield.h>
+#include <Servo.h>
 #include "movements.h"
 #include "routes.h"
 #include "block_handle.h"
 
-int routeCounter = 0; // Index of the current route, in the 2D array of all possible routes
-int red = 7; // Red LED
-int green = 8; // Green LED
 int button = 13; // Button
 int routeNumber = 17; // Total number of routes
 
@@ -58,6 +60,11 @@ void loop() {
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
     // Drive the robot according to the route, to a pick up point, from either the start or the drop off points
 
+    if (routeCounter > 14){
+      stop();
+      Serial.println("Exercise ended");
+    }
+
     readLine();
     while (lineStates[0] == 0 && lineStates[3] == 0){
       adjust(lineStates);
@@ -70,18 +77,23 @@ void loop() {
 // approach the block and pick it up
     approach_block(final_turns[routeCounter]); // Direction to be specified
 
-    if (routeCounter >= 4){checkRoute(colour_present); }
+    Serial.print("Before adjustment:");
+    Serial.println(routeCounter);
+    if (routeCounter >= 3){checkRoute(previous_colour); }
+    Serial.print("After adjustment:");
+    Serial.println(routeCounter);
     
     // detect the block's color
     // black block returns false, red block returns true
     bool colour_present = colour_detect();
+    previous_colour = colour_present;
 
     // exit station: reverse out and make a 90 degree turn with direction decided by station and colour
     // adjust route depending on the platform required
     leave(colour_present); // Increment routeCounter by 1 if black, 2 if red
 
     drive_route(routes[routeCounter], route_lengths[routeCounter]);
-    dropOffBlock(); // Increment routeCounter by 2 (drop off point to the next pick up point)
+    dropOffBlock(colour_present); // Increment routeCounter by 2 (drop off point to the next pick up point)
 
     routeCounter += 2;
   }

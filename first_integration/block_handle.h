@@ -3,8 +3,19 @@ Servo myservo2;
 int colour_sensor = 11;
 bool colour_present;
 
-Servo myservo1;              // create servo object to control a servo
-Servo myservo2;
+void tellColour(int colour_present){
+    if(!colour_present){
+        digitalWrite(green, HIGH);
+    }
+    else if (colour_present){
+        digitalWrite(red, HIGH);
+    }
+}
+
+void turnOffLED(){
+    digitalWrite(red, LOW);
+    digitalWrite(green, LOW);
+}
 
 // Definition of grabber functions
 void rotate_arms_to_1(int n){                    //Function to contract the grabber arms
@@ -128,6 +139,7 @@ void leave(bool colour_present){
     int station; // it may be useful for this to become a global variable later
 
     // decide if we're at station ABCD -> 0123
+    /*
     if (routeCounter < 6){
         station = 0;
     }
@@ -138,6 +150,19 @@ void leave(bool colour_present){
         station = 2;
     }
     else if (routeCounter < 21){
+        station = 3;
+    }
+    */
+    if (routeCounter < 3){
+        station = 0;
+    }
+    else if (routeCounter < 7){
+        station = 1;
+    }
+    else if (routeCounter < 11){
+        station = 2;
+    }
+    else if (routeCounter < 18){
         station = 3;
     }
 
@@ -151,14 +176,49 @@ void leave(bool colour_present){
     readLine();
    }
 
+    /* // Sorry Olly, we can't get the rounded corners! :(
     // turn 90 degrees clockwise for (A+B).R + G.(!A)
     if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
-        arcTurnRight();
+        Serial.println("After pickup, turning right");
+        turn(1);
     }
     else{
         //turn 90 degrees anticlockwise
-        arcTurnLeft();
+        Serial.println("After pickup, turning left");
+        turn(2);
+    }
+
+    if (!colour_present) {
+        routeCounter += 1;
+    } 
+    else if (colour_present) {
+        routeCounter += 2;
+    }
+    */
+    if (station == 0 && colour_present){
+      turn(1);
+    }
+    else if (station == 0 && !colour_present){
+      turn(2);
+    }
+    else if (station == 1 && colour_present){
+      turn(2);
+    }
+    else if (station == 1 && !colour_present){
+      turn(2);
+    }
+    else if (station == 2 && colour_present){
+      turn(1);
+    }
+    else if (station == 2 && !colour_present){
+      turn(1);
+    }
+    else if (station == 3 && colour_present){
+      turn(2);
+    }
+    else if (station == 3 && !colour_present){
+      turn(1);
     }
 
     if (!colour_present) {
@@ -173,7 +233,7 @@ void dropOffBlock(bool colour_present){
 
     readLine();
     while(lineStates[0] == 0 && lineStates[3] == 0){
-        adjust{lineStates};
+        adjust(lineStates);
         readLine();
     }
 
@@ -183,12 +243,12 @@ void dropOffBlock(bool colour_present){
     open_arms();
     delay(500);
     lift_arms();
-    close_arms();
 
     backward(speed);
-    delay(300);
+    delay(600);
 
     if (colour_present){
+      Serial.println("After dropoff, turning right");
         turnRight();
         delay(300);
         readLine();
@@ -198,6 +258,7 @@ void dropOffBlock(bool colour_present){
         }
     }
     else {
+      Serial.println("After droppoff, turning left");
         turnLeft();
         delay(300);
         readLine();
@@ -210,18 +271,4 @@ void dropOffBlock(bool colour_present){
     stop();
     delay(250);
 
-}
-
-void tellColour(int colour_present){
-    if(!colour_present){
-        digitalWrite(green, HIGH);
-    }
-    else if (colour_present){
-        digitalWrite(red, HIGH);
-    }
-}
-
-void turnOffLED(){
-    digitalWrite(red, LOW);
-    digitalWrite(green, LOW);
 }
