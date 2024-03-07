@@ -110,17 +110,17 @@ void loop() {
   }
   myservo.write(angle);**/
 
-  open_arms();
-  delay(1000);
+  //open_arms();
+  //delay(1000);
 
   lower_arms();
   delay(1000);
 
-  close_arms();
-  delay(1000);
+  //close_arms();
+  //delay(1000);
 
-  lift_arms();
-  delay(1000);
+  //lift_arms();
+  //delay(1000);
   
   delay(1000000000);
 
