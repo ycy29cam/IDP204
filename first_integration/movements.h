@@ -67,7 +67,7 @@ void turnLeft(){
   // Rotate the robot to the right, for a given duration (which determines the angle rotated)
   // This is used for sharp turns, ie. approaching the block
   blinkLED(millis());
-  left->setSpeed(125);
+  left->setSpeed(150);
   right->setSpeed(200);
   left->run(FORWARD);
   right->run(BACKWARD);
@@ -79,7 +79,7 @@ void turnRight(){
   // This is used for sharp turns, ie. approaching the block
   blinkLED(millis());
   left->setSpeed(200);
-  right->setSpeed(125);
+  right->setSpeed(150);
   left->run(BACKWARD);
   right->run(FORWARD);
   // Duration to be calibrated to turn the desired amount
@@ -189,6 +189,7 @@ void adjust(int lineStates[4]){
   }
   else{
     Serial.println("Error: both inner line sensors are on the white line");
+    forward(speed);
   }
   readLine();
 }
