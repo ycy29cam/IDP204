@@ -61,8 +61,11 @@ void loop() {
     // Drive the robot according to the route, to a pick up point, from either the start or the drop off points
 
     if (routeCounter > 14){
+      forward(speed);
+      delay(1000);
       stop();
       Serial.println("Exercise ended"); // Might or might not work
+      delay(10000000000);
     }
 
     readLine();
