@@ -32,7 +32,7 @@ void lift_arms(){                           //Function to lift arms to raised po
   int pos = 18;  
   for (pos = 18; pos <= 65; pos += 1) {    
     rotate_arms_to_2(pos);
-    delay(50); 
+    delay(20); 
  }
   delay(1000);
 }
@@ -41,7 +41,7 @@ void lower_arms(){                          //Function to lower arms to bottom p
   int pos = 65;  
   for (pos = 65; pos >= 18; pos -= 1) { 
     rotate_arms_to_2(pos);
-    delay(50); 
+    delay(20); 
  }
   delay(1000);
 }
@@ -62,7 +62,7 @@ void open_arms(){                         //Function to open grabber arms from c
 void approach_block(int direction){
 
     forward(speed);
-    delay(600);
+    delay(500);
 
     if (direction == 1){
       Serial.println("Turning right into pick up");
@@ -247,12 +247,12 @@ void dropOffBlock(bool colour_present){
     lift_arms();
 
     backward(speed);
-    delay(600);
+    delay(900);
 
     if (colour_present){
       Serial.println("After dropoff, turning right");
         turnRight();
-        delay(300);
+        delay(700);
         readLine();
         while (lineStates[1] == 0){
             turnRight();
@@ -262,7 +262,7 @@ void dropOffBlock(bool colour_present){
     else {
       Serial.println("After droppoff, turning left");
         turnLeft();
-        delay(300);
+        delay(700);
         readLine();
         while (lineStates[2] == 0){
             turnLeft();
