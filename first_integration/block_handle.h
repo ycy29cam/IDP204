@@ -24,13 +24,13 @@ void rotate_arms_to_1(int n){                    //Function to contract the grab
 }
 
 void rotate_arms_to_2(int n){                    //Function to contract the grabber arms   
-      myservo2.write(n);                         //25 is the down positions and 65 is the up position for the grabber arms                       
+      myservo2.write(n);                         //30 is the down positions and 65 is the up position for the grabber arms                       
       delay(15);                         
 }
 
 void lift_arms(){                           //Function to lift arms to raised position
-  int pos = 25;  
-  for (pos = 25; pos <= 65; pos += 1) {    
+  int pos = 30;  
+  for (pos = 30; pos <= 65; pos += 1) {    
     rotate_arms_to_2(pos);
     delay(20); 
  }
@@ -39,7 +39,7 @@ void lift_arms(){                           //Function to lift arms to raised po
 
 void lower_arms(){                          //Function to lower arms to bottom position
   int pos = 65;  
-  for (pos = 65; pos >= 25; pos -= 1) { 
+  for (pos = 65; pos >= 30; pos -= 1) { 
     rotate_arms_to_2(pos);
     delay(20); 
  }
