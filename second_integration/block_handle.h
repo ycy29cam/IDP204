@@ -29,8 +29,8 @@ void rotate_arms_to_2(int n){                    //Function to contract the grab
 }
 
 void lift_arms(){                           //Function to lift arms to raised position
-  int pos = 30;  
-  for (pos = 30; pos <= 65; pos += 1) {    
+  int pos = 32;  
+  for (pos = 32; pos <= 90; pos += 1) {    
     rotate_arms_to_2(pos);
     delay(20); 
  }
@@ -38,8 +38,8 @@ void lift_arms(){                           //Function to lift arms to raised po
 }
 
 void lower_arms(){                          //Function to lower arms to bottom position
-  int pos = 65;  
-  for (pos = 65; pos >= 30; pos -= 1) { 
+  int pos = 90;  
+  for (pos = 90; pos >= 32; pos -= 1) { 
     rotate_arms_to_2(pos);
     delay(20); 
  }
@@ -52,7 +52,7 @@ void close_arms(){                        //Function to close grabber arms from 
 }
 
 void open_arms(){                         //Function to open grabber arms from closed position
-      rotate_arms_to_1(110);
+      rotate_arms_to_1(120);
       delay(1000);
 }
 
@@ -67,7 +67,7 @@ void approach_block(int direction){
     if (direction == 1){
       Serial.println("Turning right into pick up");
         turnRight();
-        delay(400);
+        delay(500);
         readLine();
         while(lineStates[1] == 0){
             turnRight();
@@ -77,7 +77,7 @@ void approach_block(int direction){
     else if (direction == 2){
       Serial.println("Turning left into pick up");
         turnLeft();
-        delay(400);
+        delay(500);
         readLine();
         while(lineStates[2] == 0){
             turnLeft();
@@ -177,7 +177,7 @@ void leave(bool colour_present){
     readLine();
    }
 
-    /* // Sorry Olly, we can't get the rounded corners! :(
+     // Sorry Olly, we can't get the rounded corners! :(
     // turn 90 degrees clockwise for (A+B).R + G.(!A)
     if ((((station == 0)||(station == 1))&&((colour_present)))||((station != 0)&&(!colour_present))){
         //turn 90 degrees clockwise
@@ -196,8 +196,8 @@ void leave(bool colour_present){
     else if (colour_present) {
         routeCounter += 2;
     }
-    */
-    if (station == 0 && colour_present){
+    
+   /* if (station == 0 && colour_present){
       turn(1);
     }
     else if (station == 0 && !colour_present){
@@ -228,7 +228,7 @@ void leave(bool colour_present){
     } 
     else if (colour_present) {
         routeCounter += 2;
-    }
+    }*/
 }
 
 void dropOffBlock(bool colour_present){
@@ -241,10 +241,7 @@ void dropOffBlock(bool colour_present){
 
     stop();
 
-    lower_arms();
     open_arms();
-    delay(500);
-    lift_arms();
 
     backward(speed);
     delay(900);

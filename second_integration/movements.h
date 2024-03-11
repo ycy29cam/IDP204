@@ -57,7 +57,7 @@ void forward(int speed){
 void backward(int speed){
   // Rotate both motors backward at the given speed
   blinkLED(millis());
-  left->setSpeed(speed);
+  left->setSpeed(speed - 50);
   right->setSpeed(speed);
   left->run(FORWARD);
   right->run(FORWARD);
@@ -193,6 +193,30 @@ void adjust(int lineStates[4]){
   }
   readLine();
 }
+
+/*void adjust_slow(int lineStates[4]){
+  recordLineValue(lineStates);
+  int leftWeight = sumWeight(leftWeightArray);
+  int rightWeight = sumWeight(rightWeightArray);
+
+  // Maneuver the robot based on the states of the line sensors
+  if (lineStates[1] == 0 && lineStates[2] == 0){
+    forward(speed - 50);
+  }
+  else if (lineStates[1] == 0 && lineStates[2] == 1){
+    follow(speed - 50, speed - rightWeight - 50);
+    //turnRight();
+  }
+  else if (lineStates[1] == 1 && lineStates[2] == 0){
+    follow(speed - leftWeight - 50, speed - 50);
+    //turnLeft();
+  }
+  else{
+    Serial.println("Error: both inner line sensors are on the white line");
+    forward(speed- 50);
+  }
+  readLine();
+}*/
 
 void drive_route(int* journey, int number_of_junctions) {
    
